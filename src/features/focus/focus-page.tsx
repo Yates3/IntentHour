@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Check, ChevronRight, Lightbulb, MessageSquare, MoreHorizontal, Pause, Play, Volume2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Check, ChevronRight, Clock3, Lightbulb, MessageSquare, MoreHorizontal, Pause, Play, Volume2 } from "lucide-react";
 import type { InterruptionCategory, SessionOutcome } from "../../../shared/contracts";
 import { useFocusSession } from "../../hooks/use-focus-session";
 import { formatClock } from "../../lib/time";
@@ -23,7 +23,7 @@ export function FocusPage() {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       if (event.key.toLowerCase() !== "d" || target?.matches("input, textarea, select, [contenteditable=true]")) return;
-      if (focus.session) {
+      if (focus.session?.status === "running") {
         event.preventDefault();
         setDrawerOpen(true);
       }
@@ -51,6 +51,49 @@ export function FocusPage() {
     </div>
     {drawerOpen ? <div className="drawer-backdrop" onMouseDown={(event) => { if (event.currentTarget === event.target) setDrawerOpen(false); }}><aside className="distraction-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><button className="drawer-close" aria-label="Close" onClick={() => setDrawerOpen(false)}>×</button><h2 id="drawer-title">WHAT PULLED YOU AWAY?</h2><p>Choose one. Add context after the session.</p><div className="drawer-options">{categories.map((category) => <button key={category.id} className={selectedCategory === category.id ? "selected" : ""} onClick={() => setSelectedCategory(category.id)}>{category.icon}<span>{category.label}</span><i /></button>)}</div><label className="note-field">Optional note<textarea value={note} maxLength={300} onChange={(event) => setNote(event.target.value)} placeholder="Keep it brief. Return to the work." /></label><div className="drawer-actions"><button className="button button-secondary" onClick={() => setDrawerOpen(false)}>CANCEL</button><button className="button button-outline" onClick={() => void focus.markInterruption(selectedCategory, note).then(() => { setNote(""); setDrawerOpen(false); })}>MARK AND RETURN</button></div><small className="shortcut"><kbd>D</kbd> MARK DISTRACTION</small></aside></div> : null}
     {finishOpen ? <FinishDialog onCancel={() => setFinishOpen(false)} onFinish={(outcome, outcomeNote) => void focus.finish(outcome, outcomeNote).then(() => setFinishOpen(false))} onDiscard={() => void focus.discard().then(() => setFinishOpen(false))} /> : null}
+    {focus.session.status === "paused" ? <PauseOverlay intention={focus.session.intention} remaining={focus.remaining} onResume={focus.togglePause} /> : null}
+  </div>;
+}
+
+function PauseOverlay({ intention, remaining, onResume }: { intention: string; remaining: number; onResume: () => Promise<void> }) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    overlayRef.current?.focus();
+  }, []);
+
+  const resume = () => void onResume();
+
+  return <div
+    ref={overlayRef}
+    className="pause-overlay"
+    role="button"
+    tabIndex={0}
+    aria-label="Resume focus session"
+    onClick={resume}
+    onKeyDown={(event) => {
+      if (event.key === "Enter" || event.key === " " || event.key === "Escape") {
+        event.preventDefault();
+        resume();
+      }
+    }}
+  >
+    <div className="pause-overlay-grid" aria-hidden="true" />
+    <header className="pause-overlay-header">
+      <div className="brand" aria-label="IntentHour"><span className="brand-mark" aria-hidden="true"><Clock3 size={22} strokeWidth={1.7} /></span><span>IntentHour</span></div>
+      <span className="pause-local-status"><i aria-hidden="true" /> TIMER HELD ON THIS DEVICE</span>
+    </header>
+    <div className="pause-overlay-main">
+      <div className="pause-orbit" aria-hidden="true"><span className="pause-mark"><i /><i /></span></div>
+      <p className="pause-kicker">SESSION PAUSED</p>
+      <time dateTime={`PT${Math.ceil(remaining / 1000)}S`}>{formatClock(remaining)}</time>
+      <h1>{intention}</h1>
+      <p className="pause-message">Your choice is still here. Take the moment you need.</p>
+    </div>
+    <footer className="pause-overlay-footer">
+      <span className="pause-resume-cue"><Play size={17} fill="currentColor" aria-hidden="true" /> CLICK ANYWHERE TO RETURN</span>
+      <small><kbd>ENTER</kbd><span>RESUME FOCUS</span></small>
+    </footer>
   </div>;
 }
 

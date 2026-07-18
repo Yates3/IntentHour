@@ -12,6 +12,11 @@ test("capture native desktop visual QA surfaces", async ({ page }, testInfo) => 
   await page.getByRole("button", { name: "START FOCUS SESSION" }).click();
   await page.screenshot({ path: "artifacts/visual/focus-desktop.png", fullPage: true });
 
+  await page.getByRole("button", { name: "PAUSE" }).click();
+  await expect(page.getByRole("button", { name: "Resume focus session" })).toBeVisible();
+  await page.screenshot({ path: "artifacts/visual/pause-desktop.png" });
+  await page.mouse.click(12, 12);
+
   await page.getByRole("button", { name: "END SESSION" }).click();
   await page.getByRole("button", { name: "Discard session" }).click();
   await seedPreviousWeek(page);
@@ -72,6 +77,10 @@ test("capture mobile focus visual QA surface", async ({ page }, testInfo) => {
   await page.goto("/app");
   await page.getByLabel("INTENTION").fill("Draft one customer email");
   await page.getByRole("button", { name: "START FOCUS SESSION" }).click();
+  await page.getByRole("button", { name: "PAUSE" }).click();
+  await expect(page.getByRole("button", { name: "Resume focus session" })).toBeVisible();
+  await page.screenshot({ path: "artifacts/visual/pause-mobile.png" });
+  await page.mouse.click(12, 12);
   await page.getByRole("button", { name: "MARK DISTRACTION", exact: true }).click();
   await page.screenshot({ path: "artifacts/visual/focus-mobile.png", fullPage: true });
 });

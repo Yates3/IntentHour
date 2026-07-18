@@ -27,7 +27,7 @@ npm.cmd run db:migrate:local
 npm.cmd run dev
 ```
 
-Open `http://localhost:5173`. The free guest experience requires no provider credentials. Never commit `.dev.vars` or `.env.local`.
+Open `http://localhost:4317`. The free guest experience requires no provider credentials. Never commit `.dev.vars` or `.env.local`.
 
 The repository intentionally uses `--legacy-peer-deps` because Better Auth currently exposes an optional React Native/Lynx peer tree whose React 18 type peer conflicts with this web-only React 19 application. Runtime packages remain explicitly pinned in `package-lock.json`.
 

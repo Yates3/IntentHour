@@ -1,7 +1,7 @@
 # Copy missing provider values into .dev.vars for local development.
 # OPENAI_API_KEY is already provisioned locally and must never be committed.
 BETTER_AUTH_SECRET=replace-with-at-least-32-random-characters
-BETTER_AUTH_URL=http://localhost:5173
+BETTER_AUTH_URL=http://localhost:4317
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 RESEND_API_KEY=

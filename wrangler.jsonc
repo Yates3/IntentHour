@@ -24,7 +24,7 @@
   },
   "vars": {
     "APP_ENV": "development",
-    "APP_URL": "http://localhost:5173",
+    "APP_URL": "http://localhost:4317",
     "OPENAI_REVIEW_MODEL": "gpt-5.6-luna",
     "PADDLE_API_BASE": "https://sandbox-api.paddle.com"
   }

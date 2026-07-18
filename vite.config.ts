@@ -4,6 +4,6 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react(), cloudflare()],
-  server: { port: 5173 },
+  server: { port: 4317, strictPort: true },
   build: { sourcemap: true },
 });

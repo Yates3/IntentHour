@@ -9,7 +9,7 @@ export default defineConfig({
     trace: "retain-on-failure"
   },
   webServer: {
-    command: "npm.cmd run dev -- --host 127.0.0.1 --port 41739 --strictPort",
+    command: "npx.cmd vite --host 127.0.0.1 --port 41739 --strictPort",
     url: "http://127.0.0.1:41739/api/health",
     reuseExistingServer: false,
     timeout: 120000

@@ -46,12 +46,22 @@ export function createAuth(env: Env) {
     advanced: {
       useSecureCookies: String(env.APP_ENV) === "production",
       cookiePrefix: "intenthour",
+      ipAddress: {
+        ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],
+      },
     },
   });
 }
 
 export async function getAuthSession(request: Request, env: Env) {
-  return createAuth(env).api.getSession({ headers: request.headers });
+  return createAuth(env).api.getSession({ headers: withDevelopmentClientIp(request, env).headers });
+}
+
+export function withDevelopmentClientIp(request: Request, env: Env): Request {
+  if (String(env.APP_ENV) === "production" || request.headers.has("cf-connecting-ip") || request.headers.has("x-forwarded-for")) return request;
+  const headers = new Headers(request.headers);
+  headers.set("x-forwarded-for", "127.0.0.1");
+  return new Request(request, { headers });
 }
 
 function escapeHtml(value: string): string {

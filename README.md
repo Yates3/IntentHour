@@ -29,6 +29,8 @@ npm.cmd run dev
 
 Open `http://localhost:4317`. The free guest experience requires no provider credentials. Never commit `.dev.vars` or `.env.local`.
 
+On Windows, you can also double-click `Start IntentHour.cmd`. Keep the terminal window open while using the app; closing it stops the local website.
+
 The repository intentionally uses `--legacy-peer-deps` because Better Auth currently exposes an optional React Native/Lynx peer tree whose React 18 type peer conflicts with this web-only React 19 application. Runtime packages remain explicitly pinned in `package-lock.json`.
 
 ## Validation

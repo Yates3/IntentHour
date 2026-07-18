@@ -10,7 +10,7 @@ import {
   type Interruption,
 } from "../shared/contracts";
 import { escapeCsv } from "../shared/csv";
-import { createAuth, getAuthSession } from "./auth";
+import { createAuth, getAuthSession, withDevelopmentClientIp } from "./auth";
 import { database } from "./db/client";
 import {
   entitlements,
@@ -48,12 +48,19 @@ app.use("*", async (context, next) => {
 
 app.get("/api/health", (context) => context.json({ ok: true, service: "intenthour", environment: context.env.APP_ENV }));
 
+app.get("/api/config/public", (context) => context.json({
+  googleSignIn: Boolean(context.env.GOOGLE_CLIENT_ID && context.env.GOOGLE_CLIENT_SECRET),
+  magicLinkSignIn: Boolean(context.env.RESEND_API_KEY && context.env.RESEND_FROM),
+  paddleCheckout: Boolean(context.env.PADDLE_API_KEY && context.env.PADDLE_PRICE_ID && context.env.PADDLE_WEBHOOK_SECRET),
+  aiReview: Boolean(context.env.OPENAI_API_KEY),
+}));
+
 app.on(["GET", "POST"], "/api/auth/*", async (context) => {
   if (context.req.method === "POST" && context.req.path.endsWith("/sign-in/magic-link")) {
     const valid = await verifyTurnstile(context.req.raw, context.env);
     if (!valid) return context.json({ error: "Human verification failed", code: "TURNSTILE_FAILED" }, 403);
   }
-  return createAuth(context.env).handler(context.req.raw);
+  return createAuth(context.env).handler(withDevelopmentClientIp(context.req.raw, context.env));
 });
 
 app.get("/api/me/entitlement", async (context) => {

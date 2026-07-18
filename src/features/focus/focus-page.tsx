@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, ChevronRight, Clock3, Lightbulb, MessageSquare, MoreHorizontal, Pause, Play, Volume2 } from "lucide-react";
 import type { InterruptionCategory, SessionOutcome } from "../../../shared/contracts";
 import { useFocusSession } from "../../hooks/use-focus-session";
@@ -56,45 +56,37 @@ export function FocusPage() {
 }
 
 function PauseOverlay({ intention, remaining, onResume }: { intention: string; remaining: number; onResume: () => Promise<void> }) {
-  const overlayRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    overlayRef.current?.focus();
-  }, []);
-
   const resume = () => void onResume();
 
-  return <div
-    ref={overlayRef}
+  return <button
+    type="button"
     className="pause-overlay"
-    role="button"
-    tabIndex={0}
     aria-label="Resume focus session"
+    autoFocus
     onClick={resume}
     onKeyDown={(event) => {
-      if (event.key === "Enter" || event.key === " " || event.key === "Escape") {
+      if (event.key === "Escape") {
         event.preventDefault();
         resume();
       }
     }}
   >
-    <div className="pause-overlay-grid" aria-hidden="true" />
-    <header className="pause-overlay-header">
-      <div className="brand" aria-label="IntentHour"><span className="brand-mark" aria-hidden="true"><Clock3 size={22} strokeWidth={1.7} /></span><span>IntentHour</span></div>
+    <span className="pause-overlay-header">
+      <span className="brand" aria-label="IntentHour"><span className="brand-mark" aria-hidden="true"><Clock3 size={22} strokeWidth={1.7} /></span><span>IntentHour</span></span>
       <span className="pause-local-status"><i aria-hidden="true" /> TIMER HELD ON THIS DEVICE</span>
-    </header>
-    <div className="pause-overlay-main">
-      <div className="pause-orbit" aria-hidden="true"><span className="pause-mark"><i /><i /></span></div>
-      <p className="pause-kicker">SESSION PAUSED</p>
+    </span>
+    <span className="pause-overlay-main">
+      <span className="pause-orbit" aria-hidden="true"><span className="pause-mark"><i /><i /></span></span>
+      <span className="pause-kicker">SESSION PAUSED</span>
       <time dateTime={`PT${Math.ceil(remaining / 1000)}S`}>{formatClock(remaining)}</time>
-      <h1>{intention}</h1>
-      <p className="pause-message">Your choice is still here. Take the moment you need.</p>
-    </div>
-    <footer className="pause-overlay-footer">
+      <span className="pause-intention">{intention}</span>
+      <span className="pause-message">Your choice is still here. Take the moment you need.</span>
+    </span>
+    <span className="pause-overlay-footer">
       <span className="pause-resume-cue"><Play size={17} fill="currentColor" aria-hidden="true" /> CLICK ANYWHERE TO RETURN</span>
       <small><kbd>ENTER</kbd><span>RESUME FOCUS</span></small>
-    </footer>
-  </div>;
+    </span>
+  </button>;
 }
 
 function NewSession({ onStart }: { onStart: (input: { intention: string; targetMinutes: number }) => Promise<void> }) {

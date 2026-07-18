@@ -229,9 +229,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--amber); outline:
 .finish-actions > span { flex: 1; }
 
 /* Full-screen pause state */
-.pause-overlay { position: fixed; inset: 0; z-index: 60; isolation: isolate; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: 30px 38px; background: radial-gradient(circle at 50% 43%, #12212c 0, #081118 34%, #020507 76%); color: var(--text); cursor: pointer; outline: none; }
-.pause-overlay::before { content: ""; position: absolute; inset: 0; z-index: -2; opacity: .22; background-image: linear-gradient(rgb(89 226 238 / .08) 1px, transparent 1px), linear-gradient(90deg, rgb(89 226 238 / .08) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(circle at center, #000, transparent 70%); }
-.pause-overlay::after { content: ""; position: absolute; inset: 0; z-index: -1; border: 1px solid rgb(255 157 0 / .16); box-shadow: inset 0 0 100px rgb(0 0 0 / .68); pointer-events: none; }
+.pause-overlay { position: fixed; inset: 0; z-index: 60; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: 30px 38px; background: radial-gradient(circle at 50% 43%, #12212c 0, #081118 34%, #020507 76%); color: var(--text); cursor: pointer; outline: none; }
+.pause-overlay-grid { position: absolute; inset: 0; z-index: 0; opacity: .18; background-image: radial-gradient(circle at center, transparent 0 44%, #020507 82%), linear-gradient(rgb(89 226 238 / .08) 1px, transparent 1px), linear-gradient(90deg, rgb(89 226 238 / .08) 1px, transparent 1px); background-size: auto, 56px 56px, 56px 56px; pointer-events: none; }
+.pause-overlay::after { content: ""; position: absolute; inset: 0; z-index: 0; border: 1px solid rgb(255 157 0 / .16); box-shadow: inset 0 0 100px rgb(0 0 0 / .68); pointer-events: none; }
 .pause-overlay:focus-visible { box-shadow: inset 0 0 0 2px var(--cyan); }
 .pause-overlay-header, .pause-overlay-footer { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
 .pause-overlay-header { padding-bottom: 22px; border-bottom: 1px solid rgb(89 226 238 / .16); }

@@ -45,6 +45,7 @@
         "APP_ENV": "staging",
         "APP_URL": "https://intenthour-staging.ylin99207.workers.dev",
         "BETTER_AUTH_URL": "https://intenthour-staging.ylin99207.workers.dev",
+        "TURNSTILE_EXPECTED_HOSTNAME": "intenthour-staging.ylin99207.workers.dev",
         "OPENAI_REVIEW_MODEL": "gpt-5.6-luna",
         "PADDLE_API_BASE": "https://sandbox-api.paddle.com"
       }

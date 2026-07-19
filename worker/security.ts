@@ -1,12 +1,14 @@
 interface TurnstileEnvironment {
   TURNSTILE_SECRET_KEY?: string;
+  TURNSTILE_EXPECTED_HOSTNAME?: string;
   APP_ENV?: string;
 }
 
 export async function verifyTurnstile(request: Request, env: TurnstileEnvironment): Promise<boolean> {
-  if (!env.TURNSTILE_SECRET_KEY) return String(env.APP_ENV) !== "production";
+  const isLocalDevelopment = String(env.APP_ENV) === "development";
+  if (!env.TURNSTILE_SECRET_KEY) return isLocalDevelopment;
   const token = request.headers.get("x-turnstile-token");
-  if (!token) return String(env.APP_ENV) !== "production";
+  if (!token) return isLocalDevelopment;
   const body = new FormData();
   body.set("secret", env.TURNSTILE_SECRET_KEY);
   body.set("response", token);
@@ -16,7 +18,9 @@ export async function verifyTurnstile(request: Request, env: TurnstileEnvironmen
   const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body });
   if (!response.ok) return false;
   const result: { success?: boolean; hostname?: string } = await response.json();
-  return result.success === true;
+  if (result.success !== true) return false;
+  if (env.TURNSTILE_EXPECTED_HOSTNAME && result.hostname !== env.TURNSTILE_EXPECTED_HOSTNAME) return false;
+  return true;
 }
 
 export async function sha256(value: string): Promise<string> {

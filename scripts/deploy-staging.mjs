@@ -8,7 +8,7 @@ const env = {
   CLOUDFLARE_ENV: "staging",
   VITE_PADDLE_ENVIRONMENT: "sandbox",
   VITE_TURNSTILE_SITE_KEY:
-    process.env.VITE_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
+    process.env.VITE_TURNSTILE_SITE_KEY ?? "0x4AAAAAAD45Qc4hHmixYPj9",
 };
 
 execSync(`${npmCommand} run build`, { env, stdio: "inherit" });

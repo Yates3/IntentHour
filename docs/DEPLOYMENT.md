@@ -24,10 +24,11 @@ Use separate D1 databases, OAuth applications, Paddle webhook destinations, Turn
 - Deploy: `npm.cmd run deploy:staging`
 - Public E2E: `$env:PLAYWRIGHT_BASE_URL='https://intenthour-staging.ylin99207.workers.dev'; npm.cmd run test:e2e`
 
-The staging build uses Cloudflare's public Turnstile test site key unless
-`VITE_TURNSTILE_SITE_KEY` is supplied. Provide `VITE_PADDLE_CLIENT_TOKEN` in the
-process environment when sandbox checkout is ready; never commit Paddle or
-provider secrets.
+The staging build defaults to the domain-restricted `IntentHour Staging Login`
+Turnstile widget. Override `VITE_TURNSTILE_SITE_KEY` only when intentionally
+testing another widget. Provide `VITE_PADDLE_CLIENT_TOKEN` in the process
+environment when sandbox checkout is ready; never commit Paddle or provider
+secrets.
 
 The build has a post-build guard that deletes any `.dev.vars` accidentally copied into temporary output. Deployment must still be inspected for secrets before release.
 

@@ -49,6 +49,7 @@ export function securityHeaders(): Record<string, string> {
       "upgrade-insecure-requests",
     ].join("; "),
     "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), browsing-topics=()",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",

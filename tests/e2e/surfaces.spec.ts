@@ -21,7 +21,12 @@ test("unconfigured authentication providers are safe and local mode remains avai
   expect(consoleProblems).toEqual([]);
 });
 
-test("marketing and required public policy pages render", async ({ page }) => {
+test("marketing and required public policy pages render", async ({ page, request }) => {
+  const marketingResponse = await request.get("/");
+  expect(marketingResponse.headers()["content-security-policy"]).toContain("default-src 'self'");
+  expect(marketingResponse.headers()["strict-transport-security"]).toContain("max-age=31536000");
+  expect(marketingResponse.headers()["x-content-type-options"]).toBe("nosniff");
+
   await page.goto("/");
   await expect(page).toHaveTitle("IntentHour — Protect the work you chose");
   await expect(page.getByRole("heading", { name: /Protect the work you chose/i })).toBeVisible();

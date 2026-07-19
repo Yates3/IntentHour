@@ -1,14 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
+
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
   workers: 1,
   use: {
-    baseURL: "http://127.0.0.1:41739",
+    baseURL: externalBaseURL ?? "http://127.0.0.1:41739",
     trace: "retain-on-failure"
   },
-  webServer: {
+  webServer: externalBaseURL ? undefined : {
     command: "npx.cmd vite --host 127.0.0.1 --port 41739 --strictPort",
     url: "http://127.0.0.1:41739/api/health",
     reuseExistingServer: false,

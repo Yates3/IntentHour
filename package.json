@@ -16,8 +16,11 @@
     "cf-typegen": "wrangler types worker-configuration.d.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply intenthour --local",
+    "db:migrate:staging": "wrangler d1 migrations apply intenthour-staging --remote --env staging",
     "deploy:dry": "npm run build && wrangler deploy --dry-run",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:staging:dry": "node scripts/deploy-staging.mjs --dry-run",
+    "deploy:staging": "node scripts/deploy-staging.mjs"
   },
   "dependencies": {
     "better-auth": "^1.6.23",

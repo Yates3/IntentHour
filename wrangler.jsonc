@@ -8,7 +8,7 @@
     "binding": "ASSETS",
     "directory": "./dist/client",
     "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": true
   },
   "d1_databases": [
     {
@@ -27,5 +27,27 @@
     "APP_URL": "http://localhost:4317",
     "OPENAI_REVIEW_MODEL": "gpt-5.6-luna",
     "PADDLE_API_BASE": "https://sandbox-api.paddle.com"
+  },
+  "env": {
+    "staging": {
+      "name": "intenthour-staging",
+      "workers_dev": true,
+      "preview_urls": false,
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "intenthour-staging",
+          "database_id": "6dd96fc4-e71c-4479-81cd-550d49a2d055",
+          "migrations_dir": "./migrations"
+        }
+      ],
+      "vars": {
+        "APP_ENV": "staging",
+        "APP_URL": "https://intenthour-staging.ylin99207.workers.dev",
+        "BETTER_AUTH_URL": "https://intenthour-staging.ylin99207.workers.dev",
+        "OPENAI_REVIEW_MODEL": "gpt-5.6-luna",
+        "PADDLE_API_BASE": "https://sandbox-api.paddle.com"
+      }
+    }
   }
 }

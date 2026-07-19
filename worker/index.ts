@@ -22,7 +22,8 @@ import { verifyPaddleWebhook } from "./paddle";
 import { generateReview } from "./review";
 import { securityHeaders, verifyTurnstile } from "./security";
 
-type AppBindings = { Bindings: Env; Variables: { userId: string; requestId: string } };
+type AppEnv = Env & { ASSETS: Fetcher };
+type AppBindings = { Bindings: AppEnv; Variables: { userId: string; requestId: string } };
 type AppContext = Context<AppBindings>;
 
 const app = new Hono<AppBindings>();
@@ -218,7 +219,12 @@ app.delete("/api/me", async (context) => {
   return context.body(null, 204);
 });
 
-app.notFound((context) => context.json({ error: "Not found", code: "NOT_FOUND" }, 404));
+app.notFound((context) => {
+  if (context.req.path.startsWith("/api/")) {
+    return context.json({ error: "Not found", code: "NOT_FOUND" }, 404);
+  }
+  return context.env.ASSETS.fetch(context.req.raw);
+});
 app.onError((error, context) => {
   console.error(JSON.stringify({ requestId: context.get("requestId"), code: "UNHANDLED_ERROR", name: error.name }));
   return context.json({ error: "Something went wrong", code: "INTERNAL_ERROR" }, 500);

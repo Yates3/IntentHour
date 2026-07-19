@@ -14,6 +14,21 @@ Use separate D1 databases, OAuth applications, Paddle webhook destinations, Turn
 6. Provide `VITE_PADDLE_CLIENT_TOKEN`, `VITE_PADDLE_ENVIRONMENT=production`, and `VITE_TURNSTILE_SITE_KEY` to the production build.
 7. Run the complete validation commands from the README, then `npm.cmd run deploy:dry` and `npm.cmd run deploy`.
 
+## Current staging environment
+
+- Worker: `intenthour-staging`
+- URL: `https://intenthour-staging.ylin99207.workers.dev`
+- D1: `intenthour-staging`
+- Deploy preview: `npm.cmd run deploy:staging:dry`
+- Apply migrations: `npm.cmd run db:migrate:staging`
+- Deploy: `npm.cmd run deploy:staging`
+- Public E2E: `$env:PLAYWRIGHT_BASE_URL='https://intenthour-staging.ylin99207.workers.dev'; npm.cmd run test:e2e`
+
+The staging build uses Cloudflare's public Turnstile test site key unless
+`VITE_TURNSTILE_SITE_KEY` is supplied. Provide `VITE_PADDLE_CLIENT_TOKEN` in the
+process environment when sandbox checkout is ready; never commit Paddle or
+provider secrets.
+
 The build has a post-build guard that deletes any `.dev.vars` accidentally copied into temporary output. Deployment must still be inspected for secrets before release.
 
 ## External provider gates

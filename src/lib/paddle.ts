@@ -11,6 +11,8 @@ declare global {
 }
 
 let paddleReady: Promise<void> | undefined;
+let paddleInitialized = false;
+let completionHandler: (() => void | Promise<void>) | undefined;
 function loadPaddle(): Promise<void> {
   if (paddleReady) return paddleReady;
   paddleReady = new Promise((resolve, reject) => {
@@ -20,12 +22,16 @@ function loadPaddle(): Promise<void> {
   return paddleReady;
 }
 
-export async function openProCheckout(onCompleted: () => void): Promise<void> {
+export async function openProCheckout(onCompleted: () => void | Promise<void>): Promise<void> {
   const token = import.meta.env.VITE_PADDLE_CLIENT_TOKEN;
   if (!token) throw new Error("Paddle sandbox client token is not configured yet.");
   await loadPaddle();
-  window.Paddle?.Environment.set(import.meta.env.VITE_PADDLE_ENVIRONMENT === "production" ? "production" : "sandbox");
-  window.Paddle?.Initialize({ token, eventCallback: (event) => { if (event.name === "checkout.completed") onCompleted(); } });
+  completionHandler = onCompleted;
+  if (!paddleInitialized) {
+    window.Paddle?.Environment.set(import.meta.env.VITE_PADDLE_ENVIRONMENT === "production" ? "production" : "sandbox");
+    window.Paddle?.Initialize({ token, eventCallback: (event) => { if (event.name === "checkout.completed") void completionHandler?.(); } });
+    paddleInitialized = true;
+  }
   const result = await apiFetch<{ transactionId: string }>("/api/billing/checkout", { method: "POST", body: "{}" });
   window.Paddle?.Checkout.open({ transactionId: result.transactionId });
 }

@@ -14,13 +14,16 @@ export function useEntitlement() {
   const [entitlement, setEntitlement] = useState<EntitlementState>(guestState);
   const [loading, setLoading] = useState(true);
   const refresh = useCallback(async () => {
+    let next = guestState;
     try {
-      setEntitlement(await apiFetch<EntitlementState>("/api/me/entitlement"));
+      next = await apiFetch<EntitlementState>("/api/me/entitlement");
     } catch {
-      setEntitlement(guestState);
+      next = guestState;
     } finally {
+      setEntitlement(next);
       setLoading(false);
     }
+    return next;
   }, []);
   useEffect(() => { void refresh(); }, [refresh]);
   return { entitlement, loading, refresh };

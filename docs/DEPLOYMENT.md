@@ -24,6 +24,13 @@ Use separate D1 databases, OAuth applications, Paddle webhook destinations, Turn
 - Deploy: `npm.cmd run deploy:staging`
 - Public E2E: `$env:PLAYWRIGHT_BASE_URL='https://intenthour-staging.ylin99207.workers.dev'; npm.cmd run test:e2e`
 
+Provider status:
+
+- Google OAuth: configured; callback and authorization launch verified.
+- Turnstile: configured with a staging-hostname-restricted widget.
+- Resend magic links: waiting for a verified sending domain and API key.
+- Paddle sandbox: waiting for API key, webhook secret, price ID, and client token.
+
 The staging build defaults to the domain-restricted `IntentHour Staging Login`
 Turnstile widget. Override `VITE_TURNSTILE_SITE_KEY` only when intentionally
 testing another widget. Provide `VITE_PADDLE_CLIENT_TOKEN` in the process

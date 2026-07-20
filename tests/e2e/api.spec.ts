@@ -9,9 +9,9 @@ test("public health and entitlement endpoints are safe for guests", async ({ req
   expect(config.ok()).toBeTruthy();
   const publicConfig = await config.json() as Record<string, unknown>;
   expect(typeof publicConfig.googleSignIn).toBe("boolean");
+  expect(typeof publicConfig.paddleCheckout).toBe("boolean");
   expect(publicConfig).toMatchObject({
     magicLinkSignIn: false,
-    paddleCheckout: false,
     aiReview: true,
   });
 

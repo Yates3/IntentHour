@@ -29,7 +29,10 @@ Provider status:
 - Google OAuth: configured; callback and authorization launch verified.
 - Turnstile: configured with a staging-hostname-restricted widget.
 - Resend magic links: waiting for a verified sending domain and API key.
-- Paddle sandbox: waiting for API key, webhook secret, price ID, and client token.
+- Paddle sandbox: configured with a `$39` one-time price, API key, client token,
+  and active webhook destination. Signature rejection, accepted delivery, and
+  duplicate-event idempotency are verified; a completed checkout remains the
+  final human-in-the-loop acceptance step.
 
 The staging build defaults to the domain-restricted `IntentHour Staging Login`
 Turnstile widget. Override `VITE_TURNSTILE_SITE_KEY` only when intentionally

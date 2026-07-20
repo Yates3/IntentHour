@@ -31,8 +31,9 @@ Provider status:
 - Resend magic links: waiting for a verified sending domain and API key.
 - Paddle sandbox: configured with a `$39` one-time price, API key, client token,
   and active webhook destination. Signature rejection, accepted delivery, and
-  duplicate-event idempotency are verified; a completed checkout remains the
-  final human-in-the-loop acceptance step.
+  duplicate-event idempotency are verified. A completed `$39` checkout has
+  activated exactly one Pro entitlement through `transaction.completed`, and
+  the first completed local session has synced to D1.
 
 The staging build defaults to the domain-restricted `IntentHour Staging Login`
 Turnstile widget. Override `VITE_TURNSTILE_SITE_KEY` only when intentionally

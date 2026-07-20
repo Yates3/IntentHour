@@ -30,17 +30,18 @@ Provider status:
 - Turnstile: configured with a staging-hostname-restricted widget.
 - Resend magic links: waiting for a verified sending domain and API key.
 - DeepSeek weekly reviews: code and schema validation are configured for
-  `deepseek-v4-flash`. Add a fresh `DEEPSEEK_API_KEY` Worker secret before live
-  acceptance; the previously shared key must be revoked and must not be used.
+  `deepseek-v4-flash`, the `DEEPSEEK_API_KEY` Worker secret is present, and the
+  public configuration reports AI reviews enabled. A real generation remains
+  pending until an account has at least three sessions in a completed ISO week.
 - Paddle sandbox: configured with a `$39` one-time price, API key, client token,
   and active webhook destination. Signature rejection, accepted delivery, and
   duplicate-event idempotency are verified. A completed `$39` checkout has
   activated exactly one Pro entitlement through `transaction.completed`, and
   the first completed local session has synced to D1.
 
-Staging Worker version `d72fe702-c77d-4997-8c7d-b5ba33eba2b3` passed the public
+Staging Worker version `01a2cf43-fa3d-4c09-b79d-ecd53725f3f5` passed the public
 Playwright suite on 2026-07-20: 17 passed, 3 viewport-specific skips, 0 failed.
-Local unit validation passed 20 tests. CSV exports also neutralize leading
+Local unit validation passed 21 tests. CSV exports also neutralize leading
 spreadsheet formula characters in user-authored text.
 
 The staging build defaults to the domain-restricted `IntentHour Staging Login`

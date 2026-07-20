@@ -25,7 +25,7 @@
   "vars": {
     "APP_ENV": "development",
     "APP_URL": "http://localhost:4317",
-    "OPENAI_REVIEW_MODEL": "gpt-5.6-luna",
+    "DEEPSEEK_REVIEW_MODEL": "deepseek-v4-flash",
     "PADDLE_API_BASE": "https://sandbox-api.paddle.com"
   },
   "env": {
@@ -46,7 +46,7 @@
         "APP_URL": "https://intenthour-staging.ylin99207.workers.dev",
         "BETTER_AUTH_URL": "https://intenthour-staging.ylin99207.workers.dev",
         "TURNSTILE_EXPECTED_HOSTNAME": "intenthour-staging.ylin99207.workers.dev",
-        "OPENAI_REVIEW_MODEL": "gpt-5.6-luna",
+        "DEEPSEEK_REVIEW_MODEL": "deepseek-v4-flash",
         "PADDLE_API_BASE": "https://sandbox-api.paddle.com"
       }
     }

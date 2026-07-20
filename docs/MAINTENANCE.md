@@ -2,7 +2,7 @@
 
 ## Weekly
 
-- Review Worker errors, Paddle webhook failures, Resend bounces, Turnstile failure rate, and OpenAI spend.
+- Review Worker errors, Paddle webhook failures, Resend bounces, Turnstile failure rate, and DeepSeek spend.
 - Check `webhook_events` for failed processing and `billing_adjustments` for partial refunds requiring manual review.
 - Confirm the public auth, checkout, legal, and contact paths remain reachable.
 

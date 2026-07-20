@@ -29,11 +29,9 @@ Provider status:
 - Google OAuth: configured; callback and authorization launch verified.
 - Turnstile: configured with a staging-hostname-restricted widget.
 - Resend magic links: waiting for a verified sending domain and API key.
-- OpenAI weekly reviews: the configured key can authenticate and list
-  `gpt-5.6-luna`, but the live Responses API smoke test returns
-  `billing_not_active`. Enable API billing for the selected OpenAI project
-  before weekly-review acceptance; the application returns a controlled 503
-  and does not cache a failed generation.
+- DeepSeek weekly reviews: code and schema validation are configured for
+  `deepseek-v4-flash`. Add a fresh `DEEPSEEK_API_KEY` Worker secret before live
+  acceptance; the previously shared key must be revoked and must not be used.
 - Paddle sandbox: configured with a `$39` one-time price, API key, client token,
   and active webhook destination. Signature rejection, accepted delivery, and
   duplicate-event idempotency are verified. A completed `$39` checkout has
@@ -64,7 +62,7 @@ The code can be fully demonstrated locally and in Paddle sandbox, but a public c
 - Paddle merchant approval, approved domain, `$39` one-time v1.x product/price, client token, API key, and webhook secret.
 - Paddle webhook subscriptions for transaction completion and adjustment/refund/chargeback updates.
 - Public privacy, terms, refund, and contact pages with final legal entity/contact details.
-- A production OpenAI project key stored only as a Worker secret and a configured spend limit/alert.
+- A production DeepSeek API key stored only as a Worker secret and a configured spend limit/alert.
 
 ## Paddle sandbox acceptance
 

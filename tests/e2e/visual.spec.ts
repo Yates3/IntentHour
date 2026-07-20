@@ -31,7 +31,7 @@ test("capture native desktop visual QA surfaces", async ({ page }, testInfo) => 
       intention_kept: "4 of 5 sessions ended as completed or moved forward.",
     },
     generatedAt: "2026-07-18T00:00:00.000Z",
-    model: "gpt-5.6-luna",
+    model: "deepseek-v4-flash",
   } }));
   await page.goto("/app/patterns");
   await expect(page.getByText("New ideas were your most common interruption.")).toBeVisible();

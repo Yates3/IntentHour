@@ -1,21 +1,20 @@
 import OpenAI from "openai";
-import { zodTextFormat } from "openai/helpers/zod";
-import { weeklyReviewOutputSchema, type FocusSession, type Interruption, type InterruptionCategory, type WeeklyReviewOutput } from "../shared/contracts";
+import { weeklyReviewOutputSchema, type FocusSession, type Interruption, type InterruptionCategory } from "../shared/contracts";
 import { buildReviewAggregates, categoryLabel } from "../shared/review-aggregates";
 import { sha256 } from "./security";
 
 type ReviewAggregates = ReturnType<typeof buildReviewAggregates>;
 type ReviewRequester = (input: { apiKey: string; model: string; aggregates: ReviewAggregates }) => Promise<unknown>;
 interface ReviewEnv {
-  OPENAI_API_KEY: string;
-  OPENAI_REVIEW_MODEL?: string;
+  DEEPSEEK_API_KEY: string;
+  DEEPSEEK_REVIEW_MODEL?: string;
 }
 
 export async function generateReview(env: ReviewEnv, sessions: FocusSession[], interruptions: Interruption[], requestReview: ReviewRequester = requestStructuredReview) {
   const aggregates = buildReviewAggregates(sessions, interruptions);
   const sourceHash = await sha256(JSON.stringify(aggregates));
-  const model = env.OPENAI_REVIEW_MODEL || "gpt-5.6-luna";
-  const candidate = weeklyReviewOutputSchema.safeParse(await requestReview({ apiKey: env.OPENAI_API_KEY, model, aggregates }));
+  const model = env.DEEPSEEK_REVIEW_MODEL || "deepseek-v4-flash";
+  const candidate = weeklyReviewOutputSchema.safeParse(await requestReview({ apiKey: env.DEEPSEEK_API_KEY, model, aggregates }));
   const parsed = candidate.success ? candidate.data : null;
   const uniqueKeys = parsed ? new Set(parsed.insights.map((insight) => insight.evidenceKey)) : new Set<string>();
   const output = parsed && uniqueKeys.size === 2 ? parsed : deterministicReview(aggregates);
@@ -27,22 +26,30 @@ export async function generateReview(env: ReviewEnv, sessions: FocusSession[], i
   };
 }
 
-async function requestStructuredReview({ apiKey, model, aggregates }: { apiKey: string; model: string; aggregates: ReviewAggregates }): Promise<WeeklyReviewOutput | null> {
-  const openai = new OpenAI({ apiKey });
-  const response = await openai.responses.parse({
+async function requestStructuredReview({ apiKey, model, aggregates }: { apiKey: string; model: string; aggregates: ReviewAggregates }): Promise<unknown> {
+  const deepseek = new OpenAI({ apiKey, baseURL: "https://api.deepseek.com" });
+  const response = await deepseek.chat.completions.create({
     model,
-    store: false,
-    max_output_tokens: 700,
-    input: [
+    max_tokens: 700,
+    response_format: { type: "json_object" },
+    messages: [
       {
         role: "system",
-        content: "You are IntentHour's restrained weekly review writer. Return exactly two concise, practical observations grounded only in the aggregate facts supplied. Never invent a metric. Pick evidenceKey values that directly support each suggestion and do not repeat a key. Do not score or grade the person.",
+        content: "You are IntentHour's restrained weekly review writer. Return JSON only, with exactly this shape: {\"insights\":[{\"headline\":\"...\",\"suggestion\":\"...\",\"evidenceKey\":\"top_interruption|morning_completion|long_session_drift|intention_kept\"},{\"headline\":\"...\",\"suggestion\":\"...\",\"evidenceKey\":\"...\"}]}. Keep both observations concise and practical. Use only the aggregate facts supplied, never invent a metric, and use two different evidenceKey values that directly support the suggestions. Do not score or grade the person.",
       },
       { role: "user", content: JSON.stringify(aggregates) },
     ],
-    text: { format: zodTextFormat(weeklyReviewOutputSchema, "weekly_review") },
   });
-  return response.output_parsed;
+  return parseDeepSeekReviewContent(response.choices[0]?.message.content);
+}
+
+export function parseDeepSeekReviewContent(content: string | null | undefined): unknown {
+  if (!content) return null;
+  try {
+    return JSON.parse(content) as unknown;
+  } catch {
+    return null;
+  }
 }
 
 function deterministicReview(aggregates: ReturnType<typeof buildReviewAggregates>) {

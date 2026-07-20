@@ -12,7 +12,7 @@ flowchart LR
   H --> A[Better Auth]
   H --> D[(D1)]
   H --> P[Paddle]
-  H --> O[OpenAI Responses API]
+  H --> O[DeepSeek Chat Completions API]
   H --> R[Resend]
   B --> T[Turnstile widget]
   H --> T2[Turnstile Siteverify]

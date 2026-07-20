@@ -11,7 +11,7 @@ IntentHour is a production-oriented focus and reflection micro-SaaS for remote k
 - Better Auth Google OAuth and five-minute, single-use email magic links sent through a replaceable Resend adapter.
 - D1 + Drizzle account-isolated session sync with client UUIDs and last-write-wins conflict handling.
 - Server-created Paddle transactions, raw-body webhook verification, idempotent event processing, Pro grants, and full-refund/chargeback revocation.
-- Aggregate-only OpenAI weekly reviews using the Responses API, Structured Outputs, Zod validation, permanent caching, and server-authored evidence text.
+- Aggregate-only DeepSeek weekly reviews using its OpenAI-compatible Chat Completions API, JSON Output, Zod validation, permanent caching, and server-authored evidence text.
 - Turnstile on anonymous magic-link requests, restrictive security headers, privacy/legal/refund/contact pages, CSV export, and account deletion.
 - Unit and Playwright coverage for the core guest journey, wall-clock behavior, data retention, webhook signatures, privacy aggregates, responsive drawer, and guest API boundaries.
 
@@ -55,7 +55,7 @@ Server-only values belong in `.dev.vars` locally and Worker secrets in Cloudflar
 - `RESEND_API_KEY`, `RESEND_FROM`
 - `PADDLE_API_KEY`, `PADDLE_WEBHOOK_SECRET`, `PADDLE_PRICE_ID`
 - `TURNSTILE_SECRET_KEY`
-- `OPENAI_API_KEY`
+- `DEEPSEEK_API_KEY`
 
 Browser-public values belong in `.env.local` while developing and in the build environment for production:
 

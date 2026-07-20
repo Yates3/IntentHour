@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import { generateReview } from "../../worker/review";
+import { generateReview, parseDeepSeekReviewContent } from "../../worker/review";
 import { interruption, session } from "./fixtures";
 
 const env = {
-  OPENAI_API_KEY: "test-key",
-  OPENAI_REVIEW_MODEL: "gpt-5.6-luna",
+  DEEPSEEK_API_KEY: "test-key",
+  DEEPSEEK_REVIEW_MODEL: "deepseek-v4-flash",
 };
 
 describe("weekly review generation", () => {
@@ -26,7 +26,7 @@ describe("weekly review generation", () => {
     );
 
     expect(requester).toHaveBeenCalledOnce();
-    expect(result.model).toBe("gpt-5.6-luna");
+    expect(result.model).toBe("deepseek-v4-flash");
     expect(result.evidence.intention_kept).toBe("1 of 1 sessions ended as completed or moved forward.");
   });
 
@@ -40,5 +40,11 @@ describe("weekly review generation", () => {
 
     expect(result.output.insights.map((item) => item.evidenceKey)).toEqual(["top_interruption", "intention_kept"]);
     expect(result.output.insights[0]?.headline).toContain("New idea");
+  });
+
+  it("treats empty or malformed DeepSeek JSON as unusable", () => {
+    expect(parseDeepSeekReviewContent(null)).toBeNull();
+    expect(parseDeepSeekReviewContent("not-json")).toBeNull();
+    expect(parseDeepSeekReviewContent('{"insights":[]}')).toEqual({ insights: [] });
   });
 });

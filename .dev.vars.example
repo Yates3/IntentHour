@@ -1,5 +1,5 @@
 # Copy missing provider values into .dev.vars for local development.
-# OPENAI_API_KEY is already provisioned locally and must never be committed.
+# Add a fresh DeepSeek key locally. Never commit a real provider key.
 BETTER_AUTH_SECRET=replace-with-at-least-32-random-characters
 BETTER_AUTH_URL=http://localhost:4317
 GOOGLE_CLIENT_ID=
@@ -11,4 +11,5 @@ PADDLE_WEBHOOK_SECRET=
 PADDLE_PRICE_ID=
 PADDLE_API_BASE=https://sandbox-api.paddle.com
 TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
-OPENAI_REVIEW_MODEL=gpt-5.6-luna
+DEEPSEEK_API_KEY=
+DEEPSEEK_REVIEW_MODEL=deepseek-v4-flash

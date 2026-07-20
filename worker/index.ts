@@ -22,7 +22,7 @@ import { verifyPaddleWebhook } from "./paddle";
 import { generateReview } from "./review";
 import { securityHeaders, verifyTurnstile } from "./security";
 
-type AppEnv = Env & { ASSETS: Fetcher };
+type AppEnv = Env & { ASSETS: Fetcher; DEEPSEEK_API_KEY?: string; DEEPSEEK_REVIEW_MODEL?: string };
 type AppBindings = { Bindings: AppEnv; Variables: { userId: string; requestId: string } };
 type AppContext = Context<AppBindings>;
 
@@ -53,7 +53,7 @@ app.get("/api/config/public", (context) => context.json({
   googleSignIn: Boolean(context.env.GOOGLE_CLIENT_ID && context.env.GOOGLE_CLIENT_SECRET),
   magicLinkSignIn: Boolean(context.env.RESEND_API_KEY && context.env.RESEND_FROM),
   paddleCheckout: Boolean(context.env.PADDLE_API_KEY && context.env.PADDLE_PRICE_ID && context.env.PADDLE_WEBHOOK_SECRET),
-  aiReview: Boolean(context.env.OPENAI_API_KEY),
+  aiReview: Boolean(context.env.DEEPSEEK_API_KEY),
 }));
 
 app.on(["GET", "POST"], "/api/auth/*", async (context) => {
@@ -192,6 +192,7 @@ app.post("/api/reviews/:isoWeek/generate", async (context) => {
   const db = database(context.env);
   const cached = await db.select().from(weeklyReviews).where(and(eq(weeklyReviews.userId, userId), eq(weeklyReviews.isoWeek, isoWeek))).limit(1).then((rows) => rows[0]);
   if (cached) return context.json({ insights: cached.insights, evidence: cached.evidence, generatedAt: cached.generatedAt, model: cached.model });
+  if (!context.env.DEEPSEEK_API_KEY) return context.json({ error: "Weekly review is not configured", code: "AI_REVIEW_NOT_CONFIGURED" }, 503);
   const preference = await db.select().from(userPreferences).where(eq(userPreferences.userId, userId)).limit(1).then((rows) => rows[0]);
   if (!preference?.aiConsentAt || preference.aiConsentVersion !== "2026-07-18.v1") return context.json({ error: "Explicit AI review consent is required", code: "AI_CONSENT_REQUIRED" }, 403);
   const sessionRows = await context.env.DB.prepare("SELECT id,device_id,intention,target_minutes,status,started_at,ended_at,total_paused_ms,outcome,outcome_note,created_at,updated_at FROM focus_sessions WHERE user_id=? AND status='completed' AND started_at>=? AND started_at<? ORDER BY started_at").bind(userId, bounds.start.toISOString(), bounds.end.toISOString()).all<CloudSessionRow>();
@@ -202,7 +203,7 @@ app.post("/api/reviews/:isoWeek/generate", async (context) => {
   const interruptions = markRows.results.map(cloudInterruption);
   let result: Awaited<ReturnType<typeof generateReview>>;
   try {
-    result = await generateReview(context.env, sessions, interruptions);
+    result = await generateReview({ DEEPSEEK_API_KEY: context.env.DEEPSEEK_API_KEY, DEEPSEEK_REVIEW_MODEL: context.env.DEEPSEEK_REVIEW_MODEL }, sessions, interruptions);
   } catch (error) {
     const status = typeof error === "object" && error !== null && "status" in error && typeof error.status === "number" ? error.status : undefined;
     const code = typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" ? error.code : undefined;

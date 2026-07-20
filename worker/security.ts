@@ -36,11 +36,13 @@ export function safeEqual(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
-export function securityHeaders(): Record<string, string> {
+export function securityHeaders(isDevelopment = false): Record<string, string> {
+  const scriptSources = ["'self'", "https://cdn.paddle.com", "https://challenges.cloudflare.com"];
+  if (isDevelopment) scriptSources.push("'unsafe-inline'");
   return {
     "Content-Security-Policy": [
       "default-src 'self'",
-      "script-src 'self' https://cdn.paddle.com https://challenges.cloudflare.com",
+      `script-src ${scriptSources.join(" ")}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
       "connect-src 'self' https://api.paddle.com https://sandbox-api.paddle.com https://challenges.cloudflare.com",

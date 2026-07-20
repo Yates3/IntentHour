@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { verifyTurnstile } from "../../worker/security";
+import { securityHeaders, verifyTurnstile } from "../../worker/security";
 
 describe("Turnstile verification", () => {
   afterEach(() => vi.unstubAllGlobals());
@@ -54,5 +54,12 @@ describe("Turnstile verification", () => {
       TURNSTILE_SECRET_KEY: "secret",
       TURNSTILE_EXPECTED_HOSTNAME: "intenthour-staging.ylin99207.workers.dev",
     })).resolves.toBe(false);
+  });
+});
+
+describe("security headers", () => {
+  it("allows Vite's inline React refresh preamble only in development", () => {
+    expect(securityHeaders(true)["Content-Security-Policy"]).toContain("script-src 'self' https://cdn.paddle.com https://challenges.cloudflare.com 'unsafe-inline'");
+    expect(securityHeaders(false)["Content-Security-Policy"]).not.toContain("script-src 'self' https://cdn.paddle.com https://challenges.cloudflare.com 'unsafe-inline'");
   });
 });

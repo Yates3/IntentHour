@@ -35,7 +35,7 @@ app.use("*", async (context, next) => {
   try {
     await next();
   } finally {
-    for (const [name, value] of Object.entries(securityHeaders())) context.header(name, value);
+    for (const [name, value] of Object.entries(securityHeaders(context.env.APP_ENV === "development"))) context.header(name, value);
     context.header("X-Request-ID", requestId);
     console.log(JSON.stringify({
       requestId,
@@ -200,7 +200,15 @@ app.post("/api/reviews/:isoWeek/generate", async (context) => {
   const placeholders = sessions.map(() => "?").join(",");
   const markRows = await context.env.DB.prepare(`SELECT id,session_id,category,occurred_at,offset_seconds,note,created_at,updated_at FROM interruptions WHERE user_id=? AND session_id IN (${placeholders}) ORDER BY occurred_at`).bind(userId, ...sessions.map((session) => session.id)).all<CloudInterruptionRow>();
   const interruptions = markRows.results.map(cloudInterruption);
-  const result = await generateReview(context.env, sessions, interruptions);
+  let result: Awaited<ReturnType<typeof generateReview>>;
+  try {
+    result = await generateReview(context.env, sessions, interruptions);
+  } catch (error) {
+    const status = typeof error === "object" && error !== null && "status" in error && typeof error.status === "number" ? error.status : undefined;
+    const code = typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" ? error.code : undefined;
+    console.error(JSON.stringify({ requestId: context.get("requestId"), code: "AI_REVIEW_FAILED", upstreamStatus: status, upstreamCode: code }));
+    return context.json({ error: "Weekly review is temporarily unavailable", code: "AI_REVIEW_UNAVAILABLE" }, 503);
+  }
   const generatedAt = new Date().toISOString();
   await db.insert(weeklyReviews).values({ id: crypto.randomUUID(), userId, isoWeek, sourceHash: result.sourceHash, sourceSessionIds: sessions.map((session) => session.id), model: result.model, schemaVersion: "weekly-review.v1", insights: result.output.insights, evidence: result.evidence, generatedAt });
   return context.json({ insights: result.output.insights, evidence: result.evidence, generatedAt, model: result.model });

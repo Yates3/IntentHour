@@ -1,15 +1,36 @@
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
-import { weeklyReviewOutputSchema, type FocusSession, type Interruption, type InterruptionCategory } from "../shared/contracts";
+import { weeklyReviewOutputSchema, type FocusSession, type Interruption, type InterruptionCategory, type WeeklyReviewOutput } from "../shared/contracts";
 import { buildReviewAggregates, categoryLabel } from "../shared/review-aggregates";
 import { sha256 } from "./security";
 
-export async function generateReview(env: Env, sessions: FocusSession[], interruptions: Interruption[]) {
+type ReviewAggregates = ReturnType<typeof buildReviewAggregates>;
+type ReviewRequester = (input: { apiKey: string; model: string; aggregates: ReviewAggregates }) => Promise<unknown>;
+interface ReviewEnv {
+  OPENAI_API_KEY: string;
+  OPENAI_REVIEW_MODEL?: string;
+}
+
+export async function generateReview(env: ReviewEnv, sessions: FocusSession[], interruptions: Interruption[], requestReview: ReviewRequester = requestStructuredReview) {
   const aggregates = buildReviewAggregates(sessions, interruptions);
   const sourceHash = await sha256(JSON.stringify(aggregates));
-  const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
+  const model = env.OPENAI_REVIEW_MODEL || "gpt-5.6-luna";
+  const candidate = weeklyReviewOutputSchema.safeParse(await requestReview({ apiKey: env.OPENAI_API_KEY, model, aggregates }));
+  const parsed = candidate.success ? candidate.data : null;
+  const uniqueKeys = parsed ? new Set(parsed.insights.map((insight) => insight.evidenceKey)) : new Set<string>();
+  const output = parsed && uniqueKeys.size === 2 ? parsed : deterministicReview(aggregates);
+  return {
+    output,
+    evidence: aggregates.evidence,
+    sourceHash,
+    model,
+  };
+}
+
+async function requestStructuredReview({ apiKey, model, aggregates }: { apiKey: string; model: string; aggregates: ReviewAggregates }): Promise<WeeklyReviewOutput | null> {
+  const openai = new OpenAI({ apiKey });
   const response = await openai.responses.parse({
-    model: env.OPENAI_REVIEW_MODEL || "gpt-5.6-luna",
+    model,
     store: false,
     max_output_tokens: 700,
     input: [
@@ -21,15 +42,7 @@ export async function generateReview(env: Env, sessions: FocusSession[], interru
     ],
     text: { format: zodTextFormat(weeklyReviewOutputSchema, "weekly_review") },
   });
-  const parsed = response.output_parsed;
-  const uniqueKeys = parsed ? new Set(parsed.insights.map((insight) => insight.evidenceKey)) : new Set<string>();
-  const output = parsed && uniqueKeys.size === 2 ? parsed : deterministicReview(aggregates);
-  return {
-    output,
-    evidence: aggregates.evidence,
-    sourceHash,
-    model: env.OPENAI_REVIEW_MODEL || "gpt-5.6-luna",
-  };
+  return response.output_parsed;
 }
 
 function deterministicReview(aggregates: ReturnType<typeof buildReviewAggregates>) {

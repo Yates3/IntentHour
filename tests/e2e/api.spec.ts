@@ -32,4 +32,7 @@ test("cloud data and webhook processing remain server-authoritative", async ({ r
 
   const review = await request.post("/api/reviews/2026-W28/generate", { data: {} });
   expect(review.status()).toBe(403);
+
+  const exportCsv = await request.get("/api/export.csv");
+  expect(exportCsv.status()).toBe(403);
 });

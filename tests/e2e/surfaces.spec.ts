@@ -28,6 +28,8 @@ test("authentication providers reflect environment configuration and local mode 
 });
 
 test("configured Google sign-in opens the Google authorization flow", async ({ page, request }) => {
+  const externalBaseUrl = (globalThis as typeof globalThis & { process?: { env?: Record<string, string | undefined> } }).process?.env?.PLAYWRIGHT_BASE_URL;
+  test.skip(!externalBaseUrl, "OAuth redirect acceptance runs against staging, where the callback URL is registered");
   const publicConfig = await request.get("/api/config/public").then((response) => response.json()) as { googleSignIn: boolean };
   test.skip(!publicConfig.googleSignIn, "Google OAuth is not configured in this environment");
 

@@ -29,11 +29,21 @@ Provider status:
 - Google OAuth: configured; callback and authorization launch verified.
 - Turnstile: configured with a staging-hostname-restricted widget.
 - Resend magic links: waiting for a verified sending domain and API key.
+- OpenAI weekly reviews: the configured key can authenticate and list
+  `gpt-5.6-luna`, but the live Responses API smoke test returns
+  `billing_not_active`. Enable API billing for the selected OpenAI project
+  before weekly-review acceptance; the application returns a controlled 503
+  and does not cache a failed generation.
 - Paddle sandbox: configured with a `$39` one-time price, API key, client token,
   and active webhook destination. Signature rejection, accepted delivery, and
   duplicate-event idempotency are verified. A completed `$39` checkout has
   activated exactly one Pro entitlement through `transaction.completed`, and
   the first completed local session has synced to D1.
+
+Staging Worker version `d72fe702-c77d-4997-8c7d-b5ba33eba2b3` passed the public
+Playwright suite on 2026-07-20: 17 passed, 3 viewport-specific skips, 0 failed.
+Local unit validation passed 20 tests. CSV exports also neutralize leading
+spreadsheet formula characters in user-authored text.
 
 The staging build defaults to the domain-restricted `IntentHour Staging Login`
 Turnstile widget. Override `VITE_TURNSTILE_SITE_KEY` only when intentionally

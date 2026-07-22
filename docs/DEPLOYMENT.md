@@ -17,7 +17,8 @@ Use separate D1 databases, OAuth applications, Paddle webhook destinations, Turn
 ## Current staging environment
 
 - Worker: `intenthour-staging`
-- URL: `https://intenthour-staging.ylin99207.workers.dev`
+- Primary URL: `https://intenthour.yates-33.top`
+- Workers.dev URL: `https://intenthour-staging.ylin99207.workers.dev`
 - D1: `intenthour-staging`
 - Deploy preview: `npm.cmd run deploy:staging:dry`
 - Apply migrations: `npm.cmd run db:migrate:staging`
@@ -26,8 +27,12 @@ Use separate D1 databases, OAuth applications, Paddle webhook destinations, Turn
 
 Provider status:
 
-- Google OAuth: configured; callback and authorization launch verified.
-- Turnstile: configured with a staging-hostname-restricted widget.
+- Google OAuth: code and Worker configuration use the custom-domain callback
+  `https://intenthour.yates-33.top/api/auth/callback/google`. Google Cloud
+  Console must include that exact Authorized redirect URI; otherwise Google
+  returns `redirect_uri_mismatch` before Better Auth can complete login.
+- Turnstile: configured for both `intenthour.yates-33.top` and
+  `intenthour-staging.ylin99207.workers.dev`.
 - Resend magic links: waiting for a verified sending domain and API key.
 - DeepSeek weekly reviews: code and schema validation are configured for
   `deepseek-v4-flash`, the `DEEPSEEK_API_KEY` Worker secret is present, and the
@@ -39,16 +44,20 @@ Provider status:
   activated exactly one Pro entitlement through `transaction.completed`, and
   the first completed local session has synced to D1.
 
-Staging Worker version `01a2cf43-fa3d-4c09-b79d-ecd53725f3f5` passed the public
-Playwright suite on 2026-07-20: 17 passed, 3 viewport-specific skips, 0 failed.
-Local unit validation passed 21 tests. CSV exports also neutralize leading
-spreadsheet formula characters in user-authored text.
+Staging Worker version `5f05da69-29e6-46b2-8b69-1d53789a111e` was deployed on
+2026-07-22 after moving staging auth to the custom domain. Local validation
+passed typecheck, lint, and 25 unit tests. Public custom-domain Playwright checks
+for API boundaries, guest focus, Pro sync mocking, and pause/reload behavior
+passed on Chromium: 5 passed, 1 mobile-only skip. CSV exports also neutralize
+leading spreadsheet formula characters in user-authored text.
 
 The staging build defaults to the domain-restricted `IntentHour Staging Login`
 Turnstile widget. Override `VITE_TURNSTILE_SITE_KEY` only when intentionally
 testing another widget. Provide `VITE_PADDLE_CLIENT_TOKEN` in the process
 environment when sandbox checkout is ready; never commit Paddle or provider
-secrets.
+secrets. If Cloudflare Web Analytics is enabled for the custom domain, CSP must
+allow `https://static.cloudflareinsights.com` in `script-src` and
+`https://cloudflareinsights.com` in `connect-src`.
 
 The build has a post-build guard that deletes any `.dev.vars` accidentally copied into temporary output. Deployment must still be inspected for secrets before release.
 

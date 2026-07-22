@@ -43,9 +43,10 @@
       ],
       "vars": {
         "APP_ENV": "staging",
-        "APP_URL": "https://intenthour-staging.ylin99207.workers.dev",
-        "BETTER_AUTH_URL": "https://intenthour-staging.ylin99207.workers.dev",
-        "TURNSTILE_EXPECTED_HOSTNAME": "intenthour-staging.ylin99207.workers.dev",
+        "APP_URL": "https://intenthour.yates-33.top",
+        "BETTER_AUTH_URL": "https://intenthour.yates-33.top",
+        "APP_ALLOWED_ORIGINS": "https://intenthour.yates-33.top,https://intenthour-staging.ylin99207.workers.dev",
+        "TURNSTILE_EXPECTED_HOSTNAMES": "intenthour.yates-33.top,intenthour-staging.ylin99207.workers.dev",
         "DEEPSEEK_REVIEW_MODEL": "deepseek-v4-flash",
         "PADDLE_API_BASE": "https://sandbox-api.paddle.com"
       }

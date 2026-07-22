@@ -1,6 +1,7 @@
 interface TurnstileEnvironment {
   TURNSTILE_SECRET_KEY?: string;
   TURNSTILE_EXPECTED_HOSTNAME?: string;
+  TURNSTILE_EXPECTED_HOSTNAMES?: string;
   APP_ENV?: string;
 }
 
@@ -19,8 +20,18 @@ export async function verifyTurnstile(request: Request, env: TurnstileEnvironmen
   if (!response.ok) return false;
   const result: { success?: boolean; hostname?: string } = await response.json();
   if (result.success !== true) return false;
-  if (env.TURNSTILE_EXPECTED_HOSTNAME && result.hostname !== env.TURNSTILE_EXPECTED_HOSTNAME) return false;
+  const expectedHostnames = turnstileExpectedHostnames(env);
+  if (expectedHostnames.length && (!result.hostname || !expectedHostnames.includes(result.hostname))) return false;
   return true;
+}
+
+export function turnstileExpectedHostnames(env: TurnstileEnvironment): string[] {
+  return [
+    env.TURNSTILE_EXPECTED_HOSTNAME,
+    ...(env.TURNSTILE_EXPECTED_HOSTNAMES?.split(",") ?? []),
+  ]
+    .map((hostname) => hostname?.trim())
+    .filter((hostname): hostname is string => Boolean(hostname));
 }
 
 export async function sha256(value: string): Promise<string> {
@@ -37,7 +48,12 @@ export function safeEqual(a: string, b: string): boolean {
 }
 
 export function securityHeaders(isDevelopment = false): Record<string, string> {
-  const scriptSources = ["'self'", "https://cdn.paddle.com", "https://challenges.cloudflare.com"];
+  const scriptSources = [
+    "'self'",
+    "https://cdn.paddle.com",
+    "https://challenges.cloudflare.com",
+    "https://static.cloudflareinsights.com",
+  ];
   if (isDevelopment) scriptSources.push("'unsafe-inline'");
   return {
     "Content-Security-Policy": [
@@ -45,7 +61,7 @@ export function securityHeaders(isDevelopment = false): Record<string, string> {
       `script-src ${scriptSources.join(" ")}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://api.paddle.com https://sandbox-api.paddle.com https://challenges.cloudflare.com",
+      "connect-src 'self' https://api.paddle.com https://sandbox-api.paddle.com https://challenges.cloudflare.com https://cloudflareinsights.com",
       "frame-src https://buy.paddle.com https://sandbox-buy.paddle.com https://challenges.cloudflare.com",
       "font-src 'self'",
       "object-src 'none'",

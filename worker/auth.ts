@@ -2,16 +2,24 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth";
 import { magicLink } from "better-auth/plugins";
 import { Resend } from "resend";
+import { authOrigins } from "./auth-origins";
 import { database } from "./db/client";
 import { account, session, user, verification } from "./db/schema";
 
-export function createAuth(env: Env) {
+type AuthEnvironment = Env & {
+  APP_ALLOWED_ORIGINS?: string;
+};
+
+export function createAuth(env: AuthEnvironment) {
   const googleConfigured = Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET);
+  const origins = authOrigins(env);
+  const primaryOrigin = origins[0] ?? env.BETTER_AUTH_URL ?? env.APP_URL;
+  const isDevelopment = String(env.APP_ENV) === "development";
   return betterAuth({
     appName: "IntentHour",
-    baseURL: env.BETTER_AUTH_URL || env.APP_URL,
+    baseURL: primaryOrigin,
     secret: env.BETTER_AUTH_SECRET,
-    trustedOrigins: [env.APP_URL, env.BETTER_AUTH_URL].filter(Boolean),
+    trustedOrigins: origins,
     database: drizzleAdapter(database(env), {
       provider: "sqlite",
       schema: { user, session, account, verification },
@@ -44,7 +52,7 @@ export function createAuth(env: Env) {
     ],
     rateLimit: { enabled: true, window: 60, max: 10 },
     advanced: {
-      useSecureCookies: String(env.APP_ENV) === "production",
+      useSecureCookies: !isDevelopment,
       cookiePrefix: "intenthour",
       ipAddress: {
         ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],
@@ -53,7 +61,7 @@ export function createAuth(env: Env) {
   });
 }
 
-export async function getAuthSession(request: Request, env: Env) {
+export async function getAuthSession(request: Request, env: AuthEnvironment) {
   return createAuth(env).api.getSession({ headers: withDevelopmentClientIp(request, env).headers });
 }
 

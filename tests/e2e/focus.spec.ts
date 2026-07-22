@@ -22,6 +22,36 @@ test("a guest can restore, mark, and complete a focus session", async ({ page })
   await expect(page.getByText("1 DISTRACTIONS")).toBeVisible();
 });
 
+test("a Pro completion syncs immediately without a page reload", async ({ page }) => {
+  const pushes: string[] = [];
+
+  await page.route("**/api/me/entitlement", (route) => route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify({ authenticated: true, pro: true, status: "active" }),
+  }));
+  await page.route("**/api/sync/push", async (route) => {
+    pushes.push(route.request().postData() ?? "");
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ acceptedSessions: 1, acceptedInterruptions: 0 }),
+    });
+  });
+  await page.route("**/api/sync/pull**", (route) => route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify({ sessions: [], interruptions: [], nextCursor: null }),
+  }));
+
+  await page.goto("/app");
+  await page.getByLabel("INTENTION").fill("Sync this result now");
+  await page.getByRole("button", { name: "START FOCUS SESSION" }).click();
+  await page.getByRole("button", { name: "END SESSION" }).click();
+  await page.getByRole("button", { name: "SAVE RESULT" }).click();
+
+  await expect.poll(() => pushes.some((body) =>
+    body.includes('"intention":"Sync this result now"') && body.includes('"status":"completed"'),
+  )).toBe(true);
+});
+
 test("the distraction drawer works at a mobile viewport", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "mobile-only interaction");
   await page.goto("/app");

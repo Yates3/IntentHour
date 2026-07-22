@@ -19,7 +19,7 @@ interface StartInput {
   targetMinutes: number;
 }
 
-export function useFocusSession() {
+export function useFocusSession(onSessionCompleted?: () => Promise<void>) {
   const [session, setSession] = useState<FocusSession>();
   const [interruptions, setInterruptions] = useState<Interruption[]>([]);
   const [now, setNow] = useState(Date.now());
@@ -130,8 +130,9 @@ export function useFocusSession() {
       await localDb.sessions.put(next);
       setSession(undefined);
       setInterruptions([]);
+      if (onSessionCompleted) void onSessionCompleted().catch(() => undefined);
     },
-    [session],
+    [session, onSessionCompleted],
   );
 
   const discard = useCallback(async () => {

@@ -12,8 +12,8 @@ const categories: Array<{ id: InterruptionCategory; label: string; icon: React.R
   { id: "other", label: "Other", icon: <MoreHorizontal /> },
 ];
 
-export function FocusPage() {
-  const focus = useFocusSession();
+export function FocusPage({ onSessionCompleted }: { onSessionCompleted?: () => Promise<void> }) {
+  const focus = useFocusSession(onSessionCompleted);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [finishOpen, setFinishOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<InterruptionCategory>("new_idea");

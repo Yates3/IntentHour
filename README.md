@@ -79,3 +79,7 @@ docs/                 Architecture, deployment, security and maintenance
 ## Commercial boundary
 
 The product is a US-market digital SaaS sold as a one-time `$39` IntentHour v1.x lifetime license through Paddle. XorPay, subscriptions, teams, extensions, native apps, screen monitoring, advertising pixels, and real-time cross-device timer handoff are deliberately outside v1.
+
+## Project knowledge maintenance
+
+Keep [docs/PROJECT_KNOWLEDGE.md](docs/PROJECT_KNOWLEDGE.md) current after meaningful product, architecture, storage, deployment, or bug-fix changes. Update completed features, resolved issues, project experience, release/deployment status, and the ChatGPT sync summary. New information must follow the current code, live deployment results, and the newest dated record; never write API keys, passwords, tokens, or private provider details into the document.

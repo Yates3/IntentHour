@@ -29,7 +29,7 @@ The latest installed-app acceptance cycle verified installation, Start Menu laun
 - Size: 140,221,440 bytes
 - SHA-256: `F2583D44F0993C3DDF5E60ABEBB57A0DF37E59D8F140145421F7B91E6F9FE5C7`
 - Signing: unsigned
-- Publication: GitHub Release pending
+- Publication: [`desktop-v1.0.0` GitHub prerelease](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0)
 
 ## Manual provider checks
 

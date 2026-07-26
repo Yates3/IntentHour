@@ -7,7 +7,7 @@ IntentHour is a local-first focus and reflection system for remote knowledge wor
 ## Product entry points
 
 - Live Web: [https://intenthour.yates-33.top](https://intenthour.yates-33.top)
-- Windows Desktop: package prepared; GitHub Release pending
+- Windows Desktop: [download the 1.0.0 Preview](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0)
 - 90-second walkthrough: [06-Demo-Script.md](06-Demo-Script.md) — video pending
 - Detailed project overview: [01-Project-Overview.md](01-Project-Overview.md)
 
@@ -43,7 +43,7 @@ The Web client provides account, cloud history, Pro entitlement, CSV export, and
 - Web is reachable publicly.
 - Windows x64 Desktop builds, packages, installs, launches, persists local sessions, restores after restart, uses the tray, and uninstalls.
 - Unit, browser, and Electron suites pass locally.
-- Desktop release artifacts and SHA256 are prepared but not yet published.
+- Desktop 1.0.0 is published as a GitHub prerelease with the verified installer and SHA256SUMS.
 - Desktop remains local-only; no claim is made about Desktop login or cloud sync.
 
 ## My responsibilities

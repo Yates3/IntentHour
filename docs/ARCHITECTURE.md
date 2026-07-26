@@ -4,7 +4,7 @@
 
 One Cloudflare Worker owns both the static React application and all `/api/*` requests. Cloudflare Static Assets serves the Vite client bundle; the Hono Worker runs first for API paths. D1 is the durable system of record for authenticated Pro data, while IndexedDB is the system of record for Web guests and active timers.
 
-The repository also contains an unreleased Windows x64 Electron local-focus preview. Its renderer owns an independent Dexie database for device-local guest sessions and reuses shared focus-domain rules. The main process owns single-instance behavior, close-to-tray window lifecycle, and native target reminders. A narrow validated IPC bridge schedules or cancels fixed notifications. Electron Forge and Squirrel produce local unpacked and per-user installer artifacts, but Desktop does not own cloud synchronization, authentication, billing, code signing, automatic updates, or release publishing.
+The repository also contains a published Windows x64 Electron local-focus Preview. Its renderer owns an independent Dexie database for device-local guest sessions and reuses shared focus-domain rules. The main process owns single-instance behavior, close-to-tray window lifecycle, and native target reminders. A narrow validated IPC bridge schedules or cancels fixed notifications. Electron Forge and Squirrel produce local unpacked and per-user installer artifacts, but Desktop does not own cloud synchronization, authentication, billing, code signing, automatic updates, or release publishing.
 
 ```mermaid
 flowchart LR

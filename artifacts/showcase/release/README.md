@@ -12,10 +12,10 @@ Generated files are intentionally ignored by Git and remain under:
 out/make/squirrel.windows/x64/
 ```
 
-The future GitHub Release should upload:
+The [`desktop-v1.0.0` GitHub prerelease](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0) contains:
 
 - `IntentHour-Setup-1.0.0.exe`
 - `SHA256SUMS.txt`
 - `RELEASE_NOTES.md`
 
-Status: package prepared locally; GitHub Release pending.
+Status: published as a prerelease. The generated `out/` directory remains local and ignored by Git.

@@ -4,14 +4,14 @@
 
 IntentHour is a local-first focus and reflection system for remote knowledge workers, available on the Web and as a Windows Desktop Preview. It records the outcome someone intended to protect, the interruptions that occurred, and the result—not only elapsed time.
 
-**Web available · Windows x64 Desktop Preview prepared · Desktop release pending**
+**Web available · Windows x64 Desktop Preview published**
 
 React · TypeScript · Cloudflare Workers · Electron · D1 · IndexedDB
 
 ## Quick links
 
 - **Live Web app:** [intenthour.yates-33.top](https://intenthour.yates-33.top)
-- **Windows Desktop:** release package prepared; GitHub Release pending
+- **Windows Desktop:** [download the 1.0.0 Preview](https://github.com/Yates3/IntentHour/releases/download/desktop-v1.0.0/IntentHour-Setup-1.0.0.exe)
 - **Demo video:** recording pending; use the [90-second demo script](docs/DEMO_SCRIPT.md)
 - **Product case study:** [docs/PORTFOLIO_CASE_STUDY.md](docs/PORTFOLIO_CASE_STUDY.md)
 - **Recruiter overview:** [docs/RECRUITER_OVERVIEW.md](docs/RECRUITER_OVERVIEW.md)
@@ -226,14 +226,15 @@ External OAuth, email, payment, AI-provider, SmartScreen appearance, and product
 - **Platform:** Windows x64
 - **Installer:** `IntentHour-Setup-1.0.0.exe`
 - **SHA-256:** `F2583D44F0993C3DDF5E60ABEBB57A0DF37E59D8F140145421F7B91E6F9FE5C7`
-- **Status:** Release package prepared; GitHub Release pending
+- **Release:** [IntentHour Desktop Preview 1.0.0](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0)
+- **Status:** Published as a GitHub prerelease
 - **Signing:** unsigned; Windows SmartScreen may warn
 - **Account:** not required
 - **Data:** active and ended sessions stay in Desktop local storage
 - **Cloud sync:** not implemented in the current Desktop Preview
 - **Uninstall:** application registration, shortcuts, and processes are removed; Desktop `userData` is intentionally retained
 
-No download URL is published yet. The future GitHub Release must upload the installer and checksum generated from the same build.
+Download the installer and `SHA256SUMS.txt` from the [same GitHub Release](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0), then verify the checksum before installing.
 
 ## Privacy and security
 
@@ -261,11 +262,10 @@ Not implemented:
 
 ## Roadmap
 
-1. Publish the prepared GitHub Desktop Preview Release.
-2. Design Desktop authentication without changing the local active-timer boundary.
-3. Synchronize ended Sessions between Web and Desktop.
-4. Add cross-client contract and integration tests.
-5. Evaluate signed Windows distribution and auto-update.
+1. Design Desktop authentication without changing the local active-timer boundary.
+2. Synchronize ended Sessions between Web and Desktop.
+3. Add cross-client contract and integration tests.
+4. Evaluate signed Windows distribution and auto-update.
 
 ## AI-assisted development
 

@@ -7,7 +7,7 @@ IntentHour is a local-first focus and reflection system for remote knowledge wor
 The current product has two clients:
 
 - A deployed React Web application where guests can complete the local focus loop and authenticated Pro users can synchronize ended history, export CSV, purchase a lifetime entitlement, and generate an evidence-backed weekly review.
-- An unreleased Windows x64 Electron Preview that provides an account-free, offline local focus loop with restart recovery, local history, system tray behavior, and a native target reminder.
+- A published Windows x64 Electron Preview that provides an account-free, offline local focus loop with restart recovery, local history, system tray behavior, and a native target reminder.
 
 Both clients reuse framework-independent TypeScript focus rules. A Cloudflare Worker owns the authenticated API, Better Auth, D1 data, Paddle entitlement, and AI-provider boundary. The repository also includes unit, browser, Electron, packaging, installation, security, deployment, and AI-coding context.
 
@@ -304,5 +304,5 @@ This is an independently developed product system. My responsibilities included:
 - Active Session handoff is intentionally not implemented.
 - The Windows installer is unsigned and may trigger SmartScreen.
 - No automatic updater, macOS build, or Linux build exists.
-- A public Desktop GitHub Release and demo video are still pending.
+- The public Desktop GitHub prerelease is available; the demo video is still pending.
 - The repository does not yet include an explicit open-source license; a license choice is a separate owner decision.

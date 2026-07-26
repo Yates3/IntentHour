@@ -14,7 +14,7 @@ Audience: recruiters and engineering leads. Target length: 75–90 seconds.
 | 0:50–1:00 | Desktop tray/reminder and history | “Closing hides the app to the system tray. A native target reminder does not end the Session, and a full process restart restores the work.” | 展示托盘/提醒状态、重启恢复、历史。 |
 | 1:00–1:12 | Repository architecture diagram | “One Cloudflare Worker owns auth, D1, Paddle entitlement, export, and the AI boundary. Secrets never enter either client.” | 快速展示 Web、Desktop、shared、Worker、D1。 |
 | 1:12–1:22 | `shared/`, tests, `AGENTS.md` | “Framework-independent lifecycle rules, Zod contracts, Vitest, browser and Electron Playwright, and repository agent instructions keep changes verifiable.” | 展示共享代码、测试和 AI Coding 边界。 |
-| 1:22–1:30 | Final product/links screen | “The Web product is live. The unsigned Windows x64 Preview is packaged and locally accepted; its GitHub Release is the next delivery step.” | 不得说 Desktop 已发布；强调安装包待 Release。 |
+| 1:22–1:30 | Final product/links screen | “The Web product is live, and the locally accepted Windows x64 Preview is available as an unsigned GitHub prerelease.” | 强调 Desktop 已发布为 prerelease、仍未签名，并展示真实 Release 链接。 |
 
 ## Privacy checklist
 

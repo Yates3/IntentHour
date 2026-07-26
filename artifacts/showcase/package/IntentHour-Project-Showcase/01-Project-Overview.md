@@ -12,7 +12,7 @@ The product currently has two clients:
 ## Product status
 
 - Live Web product: <https://intenthour.yates-33.top>
-- Windows x64 Desktop Preview: release candidate prepared locally; GitHub Release not yet published
+- Windows x64 Desktop Preview: [published as the `desktop-v1.0.0` GitHub prerelease](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0)
 - Version: `1.0.0`
 - Installer filename: `IntentHour-Setup-1.0.0.exe`
 - Desktop signing: unsigned preview

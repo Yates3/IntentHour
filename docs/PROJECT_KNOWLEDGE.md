@@ -5,9 +5,9 @@
 - The previously pending focus lifecycle, time extraction, characterization tests, README, and E2E stability work was reviewed, fully validated, and frozen in Git commit `6f3fbe4`.
 - A Windows Electron 43.2.0 local-focus MVP now lives in `desktop/`. It includes isolated main/preload/renderer boundaries, a React renderer, an independent `intenthour-desktop-v1` Dexie database, denied permissions/popups/navigation, a restrictive CSP, security tests, and a hidden-window smoke test.
 - Desktop can start, pause, resume, mark interruptions, finish, discard, show local history, and restore an active session after a full process restart. It also has a singleton Windows tray, close-to-tray behavior, explicit Quit, single-instance restoration, and one restart-safe native reminder when a running Session reaches its target.
-- Electron Forge now produces a Windows x64 unpacked application and per-user Squirrel installer from a strict ASAR whitelist and repository-owned icon. The exact installer was installed, exercised through the full local focus loop, reinstalled with history retained, and uninstalled without leaving a product process. Packaging is local only: authentication, cloud sync, Pro behavior, signing, updates, GitHub Release publishing, and a public Desktop download remain unimplemented.
+- Electron Forge produces a Windows x64 unpacked application and per-user Squirrel installer from a strict ASAR whitelist and repository-owned icon. The exact installer was installed, exercised through the full local focus loop, reinstalled with history retained, and uninstalled without leaving a product process. The `desktop-v1.0.0` GitHub prerelease now provides the unsigned installer and checksum; authentication, cloud sync, Pro behavior, signing, and updates remain unimplemented.
 - The stable Web and Worker directories were not moved, and no npm workspace or Monorepo migration was introduced.
-- The public project showcase now includes a Web/Desktop README, real product screenshots, a portfolio case study, recruiter overview, handoff guide, demo script, Desktop release draft, and a lightweight recruiter package. The Desktop installer and GitHub Release remain unpublished.
+- The public project showcase includes a Web/Desktop README, real product screenshots, a portfolio case study, recruiter overview, handoff guide, demo script, Desktop release notes, and a lightweight recruiter package. The Desktop installer is published in the `desktop-v1.0.0` GitHub prerelease.
 
 更新时间：2026-07-22
 依据来源：当前代码、README、docs、wrangler 配置、最近 Git 记录、已执行的 staging 部署与冒烟检查。
@@ -18,7 +18,7 @@
 | --- | --- |
 | 项目名称 | IntentHour |
 | 项目类型 | 面向美国远程知识工作者的专注复盘微型 SaaS |
-| 当前状态 | Web 已部署到自定义域名；Windows Desktop Preview 已完成本地打包与发布前验收，但尚未发布 GitHub Release |
+| 当前状态 | Web 已部署到自定义域名；Windows Desktop Preview 1.0.0 已作为 GitHub prerelease 发布 |
 | 开始时间 | 2026-07-18，可由初始 Git 历史与迁移/文档时间推断 |
 | 最近更新时间 | 2026-07-26 |
 | GitHub 仓库 | https://github.com/Yates3/IntentHour.git |
@@ -751,7 +751,7 @@ Git 分支：
 | 维护文档 | `docs/MAINTENANCE.md` |
 | 产品截图 | `artifacts/showcase/screenshots/*.png` |
 | 演示视频 | 待录制；脚本见 `docs/DEMO_SCRIPT.md` |
-| Release | Desktop Release 待发布；草稿见 `artifacts/showcase/release/desktop-preview-release-notes.md` |
+| Release | `https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0` |
 | 最新 commit | 以 Git 历史为准，不在知识文档中固化动态值 |
 | Issue | 待补充 |
 | 测试报告 | `test-results/`，另有命令输出记录 |
@@ -924,11 +924,11 @@ AI 工具参与了代码实现、测试和文档整理，但我负责需求边�
 
 ### 正在进行
 
-GitHub 项目展示整理、Desktop Preview Release 准备，以及需要真实供应商环境的生产验收。
+演示视频准备，以及需要真实供应商环境的生产验收。
 
 ### 尚未开始
 
-Desktop GitHub Release、安装包签名、自动更新、Desktop 登录与结束记录云同步、演示视频，以及生产供应商配置的最终复核。
+安装包签名、自动更新、Desktop 登录与结束记录云同步、演示视频，以及生产供应商配置的最终复核。
 
 ### 已知问题
 
@@ -940,17 +940,17 @@ React + Vite Web 客户端和 Electron Windows Desktop 客户端共享框架无�
 
 ### 当前部署状态
 
-Web 当前入口为 `https://intenthour.yates-33.top`。供应商控制台状态和 Worker version 属于易变化运行状态，不在这里固化；发布或故障排查时应按 `docs/DEPLOYMENT.md` 重新验证。Desktop 安装包仅在本地生成，尚未创建 GitHub Release。
+Web 当前入口为 `https://intenthour.yates-33.top`。供应商控制台状态和 Worker version 属于易变化运行状态，不在这里固化；发布或故障排查时应按 `docs/DEPLOYMENT.md` 重新验证。Desktop Preview 1.0.0 已发布到 `https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0`。
 
 ### 下一步三个任务
 
 1. 审查并提交当前 Web/Desktop/文档改动。
-2. 经明确确认后创建 GitHub Desktop Preview Release，并上传同一次构建的安装包与 checksum。
-3. 录制 60–90 秒演示视频并回填公开链接。
+2. 录制 60–90 秒演示视频并回填公开链接。
+3. 评估签名 Windows 分发与 Desktop 登录设计，不改变活动计时的设备本地边界。
 
 ### 需要开发者确认的信息
 
-是否提交并推送当前改动、是否创建 Desktop Preview GitHub Release、是否上传未签名安装包，以及演示视频最终公开地址。OAuth、Resend、Paddle 和 AI 的生产供应商配置仍应在正式发布前重新核验。
+演示视频最终公开地址、是否投入 Windows 代码签名，以及 Desktop 登录设计。OAuth、Resend、Paddle 和 AI 的生产供应商配置仍应在正式发布前重新核验。
 
 ## 32. ChatGPT 同步摘要
 

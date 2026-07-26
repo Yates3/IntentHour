@@ -2,7 +2,7 @@
 
 ## Release status
 
-Release package prepared; GitHub Release pending.
+Published as the [`desktop-v1.0.0` GitHub prerelease](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0).
 
 ## Platform
 
@@ -33,7 +33,7 @@ Uninstall removes product registration, standard shortcuts, and running product 
 
 ## Install
 
-1. Download the installer and `SHA256SUMS.txt` from the same future GitHub Release.
+1. Download the installer and `SHA256SUMS.txt` from the same [GitHub Release](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0).
 2. Verify the installer SHA-256.
 3. Run `IntentHour-Setup-1.0.0.exe`.
 4. If SmartScreen appears, confirm the unsigned preview status and publisher information before continuing.
@@ -45,7 +45,6 @@ Use Windows Installed Apps or the IntentHour uninstall entry. Local Desktop hist
 
 ## Known limitations
 
-- GitHub Release not yet published
 - Unsigned installer
 - No automatic updater
 - No Desktop account or cloud sync
@@ -53,4 +52,4 @@ Use Windows Installed Apps or the IntentHour uninstall entry. Local Desktop hist
 - No real-time active timer handoff
 - No macOS or Linux build
 
-This document describes the verified local release candidate only. It is not a download link.
+This document describes the verified release candidate attached to the GitHub prerelease.

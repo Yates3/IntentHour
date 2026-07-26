@@ -18,7 +18,7 @@ Read these first:
 - Live Web: [https://intenthour.yates-33.top](https://intenthour.yates-33.top)
 - Local Web default: `http://127.0.0.1:4317`
 - Desktop development: `npm.cmd run desktop:dev`
-- Desktop release: prepared locally under `out/`; GitHub Release pending
+- Desktop release: [IntentHour Desktop Preview 1.0.0](https://github.com/Yates3/IntentHour/releases/tag/desktop-v1.0.0)
 
 ## Repository structure
 

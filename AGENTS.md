@@ -6,11 +6,12 @@ These instructions are for Codex and other AI agents working in this repository.
 
 IntentHour is a production-oriented focus and reflection micro-SaaS for remote knowledge workers. Guests can choose one concrete outcome, run a reload-safe local timer, mark interruptions, and complete a session without an account. Pro Lifetime adds authenticated cloud history, cross-device completed-session sync, CSV export, Paddle-based entitlement, and one evidence-backed AI review for each completed ISO week.
 
-Current v1 intentionally excludes subscriptions, teams, native apps, browser extensions, real-time cross-device active timer handoff, calendar integrations, screen/app/browser monitoring, advertising pixels, and XorPay for the US launch. Do not add these or adjacent features unless the user explicitly changes the scope.
+The repository now includes an unreleased Windows x64 Electron local-focus preview and local Squirrel packaging, but the shipped product remains the Web app until a Desktop release is explicitly published. Desktop currently supports device-local guest focus sessions and history only; it does not include authentication, cloud sync, Pro, billing, AI review, code signing, or automatic updates. Current v1 still excludes subscriptions, teams, mobile apps, browser extensions, real-time cross-device active timer handoff, calendar integrations, screen/app/browser monitoring, advertising pixels, and XorPay for the US launch. Do not add these or adjacent features unless the user explicitly changes the scope.
 
 ## 2. Repository map
 
 - `src/`: React, TypeScript, and Vite client code. It owns the browser UI, IndexedDB-backed guest mode, local timer lifecycle, Paddle checkout launcher, and API clients.
+- `desktop/`: Electron main/preload security boundary plus the React renderer and its independent Dexie database. It owns device-local guest focus sessions, local history, single-instance/window lifecycle, the system tray, target-reached notifications, and local packaging assets; it does not own cloud sync, authentication, billing, code signing, updates, or publishing.
 - `worker/`: Cloudflare Worker server code. It owns Hono API routes, Better Auth integration, D1 access, Paddle billing and webhook handling, AI review generation, CSV export, security headers, and account deletion.
 - `shared/`: Framework-independent Zod contracts, TypeScript types, deterministic review facts, and CSV helpers shared by client, Worker, and tests.
 - `migrations/`: D1 SQL migrations. Database shape changes must be represented here as well as in the Drizzle schema.
@@ -24,6 +25,7 @@ Do not claim or create `apps/`, `services/`, or `packages/` structure unless a f
 
 - `src/` may depend on `shared/`, browser APIs, and public `/api/*` endpoints. It must not import `worker/` internals.
 - `worker/` may depend on `shared/`, D1/Drizzle, Hono, Better Auth, Paddle, Resend, Turnstile, and the DeepSeek/OpenAI-compatible client.
+- `desktop/` may depend on `shared/` pure domain code. Electron runtime APIs must remain in the main or preload process; renderer code must not import Node.js or Electron.
 - `shared/` must not import or depend on React, Cloudflare Worker runtime APIs, D1, Paddle SDK, Resend SDK, Turnstile SDK, or other vendor runtimes.
 - Cross-client and server-compatible pure TypeScript types, Zod schemas, and serializable protocols may live in `shared/`.
 - Server-only vendor raw payloads, SDK types, and provider processing logic must remain in `worker/`.
@@ -61,6 +63,15 @@ Do not claim or create `apps/`, `services/`, or `packages/` structure unless a f
 - Preserve reload recovery, pause/resume behavior, local persistence, and wall-clock timer correctness.
 - Do not create trusted entitlement, user identity, price, or plan state in the client.
 - When changing the focus lifecycle, check start, pause, resume, interruption marking, finish, discard, refresh, and sleeping-tab behavior.
+
+### Desktop changes
+
+- Keep `contextIsolation: true`, `nodeIntegration: false`, `sandbox: true`, `webSecurity: true`, and `webviewTag: false`.
+- Load only repository-owned local renderer content. Deny unrequested permissions, new windows, and navigation outside the approved local entry point.
+- Do not expose generic IPC, filesystem, shell, process, credential, or Electron APIs through preload. Add narrowly typed allowlisted methods only when a real feature requires them.
+- Keep desktop focus behavior dependent on shared domain rules rather than copying Web hook logic.
+- Keep tray, window lifecycle, and native notifications in the main process. Renderer access must remain limited to the fixed, validated target-notification bridge.
+- Do not claim cloud sync, signing, updates, or a published release until each capability exists and is verified. Packaging claims must distinguish locally generated/installed artifacts from a public release.
 
 ### API changes
 
@@ -102,6 +113,8 @@ Use only scripts that exist in `package.json`.
 - AI weekly review logic: run `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run test`; real provider generation currently requires configured secrets, Pro entitlement, consent, and enough completed sessions.
 - Wrangler or Cloudflare binding/config changes: run `npm.cmd run cf-typegen`, `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run test`, `npm.cmd run build`, and a dry-run deploy check. For default or production Worker configuration changes, run `npm.cmd run deploy:dry`. For staging deployment configuration changes, run `npm.cmd run deploy:staging:dry`. Do not run a real deployment command unless the user explicitly asks for deployment.
 - Core user-flow changes: run `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run test`, `npm.cmd run test:e2e`, and `npm.cmd run build`.
+- Desktop main, preload, renderer, local storage, or security-boundary changes: run `npm.cmd run typecheck`, `npm.cmd run desktop:typecheck`, `npm.cmd run lint`, `npm.cmd run test`, `npm.cmd run desktop:test`, `npm.cmd run desktop:smoke`, and `npm.cmd run desktop:build`.
+- Desktop packaging changes: run the Desktop validation above, then `npm.cmd run desktop:package` and `npm.cmd run desktop:make`. Inspect the packaged ASAR and Authenticode status, install the generated artifact, and run `npm.cmd run desktop:test:installed`; installer elevation, SmartScreen, shortcuts, reinstall, and uninstall behavior also require explicit Windows acceptance evidence. These commands do not authorize publishing.
 - Full pre-submit verification order: `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run test`, `npm.cmd run test:e2e`, `npm.cmd run build`.
 
 If an external-provider or production-only path has no reliable automated coverage, report it as manual verification required. Do not claim it passed unless it was actually verified.

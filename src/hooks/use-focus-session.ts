@@ -5,12 +5,14 @@ import type {
   InterruptionCategory,
   SessionOutcome,
 } from "../../shared/contracts";
+import { recordInterruption } from "../../shared/focus-interruption";
 import {
   discardSession,
   finishSession,
   pauseSession,
   resumeSession,
 } from "../../shared/focus-session-lifecycle";
+import { startSession } from "../../shared/focus-session-start";
 import {
   getCurrentSession,
   getDeviceId,
@@ -55,22 +57,16 @@ export function useFocusSession(onSessionCompleted?: () => Promise<void>) {
   }, [session]);
 
   const start = useCallback(async ({ intention, targetMinutes }: StartInput) => {
-    const timestamp = new Date().toISOString();
-    const next: FocusSession = {
-      id: crypto.randomUUID(),
-      deviceId: await getDeviceId(),
-      intention: intention.trim(),
-      targetMinutes,
-      status: "running",
-      startedAt: timestamp,
-      pausedAt: null,
-      endedAt: null,
-      totalPausedMs: 0,
-      outcome: null,
-      outcomeNote: null,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    };
+    const result = startSession(
+      { intention, targetMinutes },
+      {
+        nowMs: Date.now(),
+        deviceId: await getDeviceId(),
+        ids: { uuid: () => crypto.randomUUID() },
+      },
+    );
+    if (!result.ok) return;
+    const next = result.value;
     await localDb.sessions.put(next);
     setSession(next);
     setInterruptions([]);
@@ -93,17 +89,16 @@ export function useFocusSession(onSessionCompleted?: () => Promise<void>) {
   const markInterruption = useCallback(
     async (category: InterruptionCategory, note?: string) => {
       if (!session) return;
-      const timestamp = new Date().toISOString();
-      const mark: Interruption = {
-        id: crypto.randomUUID(),
-        sessionId: session.id,
-        category,
-        occurredAt: timestamp,
-        offsetSeconds: Math.floor((Date.now() - Date.parse(session.startedAt)) / 1000),
-        note: note?.trim() || null,
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      };
+      const result = recordInterruption(
+        session,
+        { category, note },
+        {
+          nowMs: Date.now(),
+          ids: { uuid: () => crypto.randomUUID() },
+        },
+      );
+      if (!result.ok) return;
+      const mark = result.value;
       await localDb.interruptions.put(mark);
       setInterruptions((items) => [...items, mark]);
     },

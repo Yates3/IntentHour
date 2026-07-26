@@ -1,7 +1,16 @@
 {
   "name": "intenthour",
+  "productName": "IntentHour",
   "private": true,
   "version": "1.0.0",
+  "description": "A local-first focus and reflection client for deliberate work.",
+  "author": "Yates3",
+  "copyright": "Copyright © 2026 IntentHour",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Yates3/IntentHour.git"
+  },
+  "main": "dist/desktop/main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +22,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "npm run db:migrate:local && playwright test",
+    "desktop:typecheck": "tsc -p tsconfig.desktop.json --noEmit --pretty false && tsc -p tsconfig.desktop-renderer.json --noEmit --pretty false",
+    "desktop:build": "npm run desktop:typecheck && node scripts/prepare-desktop-build.mjs && tsc -p tsconfig.desktop.json --pretty false && vite build --config desktop/vite.config.ts",
+    "desktop:dev": "npm run desktop:build && electron dist/desktop/main.js",
+    "desktop:smoke": "npm run desktop:build && electron dist/desktop/main.js --smoke-test",
+    "desktop:test": "npm run desktop:build && playwright test --config playwright.desktop.config.ts",
+    "desktop:test:installed": "playwright test --config playwright.desktop-installed.config.ts",
+    "desktop:package": "npm run desktop:build && electron-forge package --platform=win32 --arch=x64",
+    "desktop:make": "npm run desktop:build && node scripts/run-desktop-make.mjs",
     "cf-typegen": "wrangler types worker-configuration.d.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply intenthour --local",
@@ -26,6 +43,7 @@
     "better-auth": "^1.6.23",
     "dexie": "^4.4.4",
     "drizzle-orm": "^0.45.2",
+    "electron-squirrel-startup": "^1.0.1",
     "hono": "^4.12.30",
     "lucide-react": "^1.25.0",
     "openai": "^6.48.0",
@@ -38,6 +56,8 @@
     "@cloudflare/vite-plugin": "^1.45.1",
     "@cloudflare/vitest-pool-workers": "^0.18.6",
     "@cloudflare/workers-types": "latest",
+    "@electron-forge/cli": "^7.11.2",
+    "@electron-forge/maker-squirrel": "^7.11.2",
     "@eslint/js": "latest",
     "@playwright/test": "^1.61.1",
     "@types/node": "latest",
@@ -45,6 +65,7 @@
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "^6.0.3",
     "drizzle-kit": "^0.31.10",
+    "electron": "^43.2.0",
     "eslint": "^10.7.0",
     "fake-indexeddb": "latest",
     "typescript": "^6.0.3",
@@ -52,5 +73,8 @@
     "vite": "^8.1.5",
     "vitest": "^4.1.10",
     "wrangler": "^4.112.0"
+  },
+  "config": {
+    "forge": "./forge.config.cjs"
   }
 }

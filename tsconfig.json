@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.desktop-renderer.json" },
     { "path": "./tsconfig.worker.json" },
     { "path": "./tsconfig.tools.json" }
   ]

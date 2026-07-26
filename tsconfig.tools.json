@@ -12,6 +12,11 @@
     "vite.config.ts",
     "vitest.config.ts",
     "playwright.config.ts",
-    "drizzle.config.ts"
+    "playwright.desktop.config.ts",
+    "playwright.desktop-installed.config.ts",
+    "drizzle.config.ts",
+    "desktop/vite.config.ts",
+    "desktop/**/*.ts",
+    "desktop/**/*.cts"
   ]
 }

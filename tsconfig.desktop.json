@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "desktop",
+    "outDir": "dist/desktop",
+    "strict": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "types": ["node"],
+    "sourceMap": false
+  },
+  "include": [
+    "desktop/main.ts",
+    "desktop/ipc-contracts.ts",
+    "desktop/notification-scheduler.ts",
+    "desktop/notification-state.ts",
+    "desktop/preload.cts",
+    "desktop/security.ts",
+    "desktop/test-runtime.ts",
+    "desktop/window-lifecycle.ts"
+  ]
+}

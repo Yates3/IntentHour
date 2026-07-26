@@ -3,7 +3,12 @@ dist/
 .wrangler/
 playwright-report/
 test-results/
-artifacts/
+artifacts/*
+!artifacts/showcase/
+!artifacts/showcase/**
+artifacts/showcase/*.zip
+artifacts/showcase/*.zip.sha256
+out/
 coverage/
 *.tsbuildinfo
 .DS_Store

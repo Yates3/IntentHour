@@ -294,7 +294,7 @@ test("the paused UI prevents the distraction shortcut from opening the drawer", 
   await expect(page.getByRole("button", { name: "Resume focus session" })).toBeVisible();
 });
 
-test("CURRENT BEHAVIOR: focus logic accepts an interruption while paused when the UI guard is bypassed", async ({ page }) => {
+test("focus logic rejects an interruption while paused when the UI guard is bypassed", async ({ page }) => {
   const intention = "Characterize paused interruption guard";
   await startSession(page, intention);
   await page.getByRole("button", { name: "PAUSE" }).click();
@@ -314,13 +314,7 @@ test("CURRENT BEHAVIOR: focus logic accepts an interruption while paused when th
   await expect.poll(async () => {
     const marks = await readStore<Interruption>(page, "interruptions");
     return marks.filter((mark) => mark.sessionId === paused.id).length;
-  }).toBe(1);
-  const [mark] = (await readStore<Interruption>(page, "interruptions"))
-    .filter((item) => item.sessionId === paused.id);
-  expect(mark).toMatchObject({
-    sessionId: paused.id,
-    category: "message",
-  });
+  }).toBe(0);
   await expect(readSession(page, intention)).resolves.toMatchObject({
     status: "paused",
     pausedAt: paused.pausedAt,
@@ -370,4 +364,11 @@ test("CURRENT BEHAVIOR: interruption offset includes paused wall-clock time", as
   expect(firstMark.offsetSeconds).toBeGreaterThanOrEqual(119);
   expect(firstMark.offsetSeconds * 1_000).toBeGreaterThan(resumed.totalPausedMs + 50_000);
   await expect(page.getByText("2 MARKED")).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByText("2 MARKED")).toBeVisible();
+  const restoredMarks = (await readStore<Interruption>(page, "interruptions"))
+    .filter((mark) => mark.sessionId === resumed.id)
+    .sort((left, right) => left.occurredAt.localeCompare(right.occurredAt));
+  expect(restoredMarks.map((mark) => mark.id)).toEqual(marks.map((mark) => mark.id));
 });

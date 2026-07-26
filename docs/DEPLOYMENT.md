@@ -84,6 +84,25 @@ The code can be fully demonstrated locally and in Paddle sandbox, but a public c
 6. Send a duplicate webhook and confirm it is consumed once.
 7. Approve a full sandbox refund and confirm Pro is revoked; verify a partial refund is recorded without automatic revocation.
 
+## Windows Desktop preview packaging
+
+Desktop packaging is independent from Cloudflare deployment and does not publish anything:
+
+```powershell
+npm.cmd run desktop:typecheck
+npm.cmd run lint
+npm.cmd run test
+npm.cmd run desktop:test
+npm.cmd run desktop:smoke
+npm.cmd run desktop:build
+npm.cmd run desktop:package
+npm.cmd run desktop:make
+```
+
+`desktop:package` creates the unpacked Windows x64 app in `out/IntentHour-win32-x64/`. `desktop:make` creates a per-user Squirrel installer and NuGet package in `out/make/squirrel.windows/x64/`. The make wrapper stages resource editing under an ASCII-only temporary path for compatibility with Windows repositories whose path contains Chinese characters.
+
+Before publishing a Desktop preview, inspect the packaged ASAR for test code, source maps, environment files, local databases, and secrets; calculate and publish the installer SHA256; install the exact artifact; run `npm.cmd run desktop:test:installed`; verify shortcuts, reinstall data retention, uninstall behavior, and the absence of residual product processes. The current artifacts are unsigned and must be labeled as a preview that may trigger Windows SmartScreen. No GitHub Release is created by the packaging commands.
+
 ## Rollback
 
 Worker deployments are versioned by Cloudflare; roll back application code independently from D1. Database migrations are forward-only by default. Before schema changes, take a D1 export and write a tested compensating migration instead of deleting production tables.

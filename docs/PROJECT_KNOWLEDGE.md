@@ -1,5 +1,14 @@
 # IntentHour 项目知识档案
 
+## Current verified update — 2026-07-26
+
+- The previously pending focus lifecycle, time extraction, characterization tests, README, and E2E stability work was reviewed, fully validated, and frozen in Git commit `6f3fbe4`.
+- A Windows Electron 43.2.0 local-focus MVP now lives in `desktop/`. It includes isolated main/preload/renderer boundaries, a React renderer, an independent `intenthour-desktop-v1` Dexie database, denied permissions/popups/navigation, a restrictive CSP, security tests, and a hidden-window smoke test.
+- Desktop can start, pause, resume, mark interruptions, finish, discard, show local history, and restore an active session after a full process restart. It also has a singleton Windows tray, close-to-tray behavior, explicit Quit, single-instance restoration, and one restart-safe native reminder when a running Session reaches its target.
+- Electron Forge now produces a Windows x64 unpacked application and per-user Squirrel installer from a strict ASAR whitelist and repository-owned icon. The exact installer was installed, exercised through the full local focus loop, reinstalled with history retained, and uninstalled without leaving a product process. Packaging is local only: authentication, cloud sync, Pro behavior, signing, updates, GitHub Release publishing, and a public Desktop download remain unimplemented.
+- The stable Web and Worker directories were not moved, and no npm workspace or Monorepo migration was introduced.
+- The public project showcase now includes a Web/Desktop README, real product screenshots, a portfolio case study, recruiter overview, handoff guide, demo script, Desktop release draft, and a lightweight recruiter package. The Desktop installer and GitHub Release remain unpublished.
+
 更新时间：2026-07-22
 依据来源：当前代码、README、docs、wrangler 配置、最近 Git 记录、已执行的 staging 部署与冒烟检查。
 
@@ -9,9 +18,9 @@
 | --- | --- |
 | 项目名称 | IntentHour |
 | 项目类型 | 面向美国远程知识工作者的专注复盘微型 SaaS |
-| 当前状态 | staging 已部署到 Cloudflare，并已切换到自定义域名；Google Cloud Console 仍需加入新 OAuth 回调 URI |
+| 当前状态 | Web 已部署到自定义域名；Windows Desktop Preview 已完成本地打包与发布前验收，但尚未发布 GitHub Release |
 | 开始时间 | 2026-07-18，可由初始 Git 历史与迁移/文档时间推断 |
-| 最近更新时间 | 2026-07-22 |
+| 最近更新时间 | 2026-07-26 |
 | GitHub 仓库 | https://github.com/Yates3/IntentHour.git |
 | 在线体验地址 | https://intenthour.yates-33.top |
 | 正式域名 | 当前自定义域名为 `intenthour.yates-33.top`；生产商户审核状态待确认 |
@@ -49,7 +58,7 @@ IntentHour 是一个专注于“本次工作成果是否被保护住”的专注
 
 ### 4.4 暂不解决的问题
 
-v1 不做订阅、团队账户、实时跨设备计时接力、浏览器扩展、原生 App、日历集成、屏幕监控、应用监控、广告追踪、内部管理后台、XorPay 美国首发支付、生产域名正式上线。
+v1 不做订阅、团队账户、实时跨设备计时接力、浏览器扩展、移动 App、日历集成、屏幕监控、应用监控、广告追踪、内部管理后台或 XorPay 美国首发支付。Windows Desktop Preview 已作为本地专注客户端实现，但登录、云同步、Pro、签名和自动更新仍不在当前完成范围。
 
 ## 5. 核心用户场景
 
@@ -734,16 +743,16 @@ Git 分支：
 | 证据 | 状态 |
 | --- | --- |
 | GitHub 仓库 | https://github.com/Yates3/IntentHour.git |
-| 在线地址 | https://intenthour-staging.ylin99207.workers.dev |
+| 在线地址 | https://intenthour.yates-33.top |
 | README | `README.md` |
 | 架构文档 | `docs/ARCHITECTURE.md` |
 | 部署文档 | `docs/DEPLOYMENT.md` |
 | 安全文档 | `docs/SECURITY.md` |
 | 维护文档 | `docs/MAINTENANCE.md` |
-| 产品截图/视觉稿 | `docs/visual-spec/*.png` |
-| 演示视频 | 待补充 |
-| Release | 待补充 |
-| 最新 commit | `2d7a67b fix: sync Pro sessions after completion` |
+| 产品截图 | `artifacts/showcase/screenshots/*.png` |
+| 演示视频 | 待录制；脚本见 `docs/DEMO_SCRIPT.md` |
+| Release | Desktop Release 待发布；草稿见 `artifacts/showcase/release/desktop-preview-release-notes.md` |
+| 最新 commit | 以 Git 历史为准，不在知识文档中固化动态值 |
 | Issue | 待补充 |
 | 测试报告 | `test-results/`，另有命令输出记录 |
 | 用户反馈 | 线程内现场反馈，未形成公开 issue |
@@ -911,37 +920,37 @@ AI 工具参与了代码实现、测试和文档整理，但我负责需求边�
 
 ### 已完成
 
-游客本地专注流程、刷新恢复、暂停 overlay、分心记录、历史列表、Pro 登录与 Paddle 沙盒付款、云同步、CSV 导出、DeepSeek 周复盘代码、法律页面、Cloudflare staging 部署、核心单元与 E2E 测试。
+游客本地专注流程、刷新恢复、暂停 overlay、分心记录、历史列表、Web Pro 登录与 Paddle 沙盒付款、云同步、CSV 导出、DeepSeek 周复盘代码、法律页面、Cloudflare 部署、共享专注领域规则、Windows Desktop 本地专注闭环、托盘、目标提醒、重启恢复、本地打包，以及单元、Web E2E 和 Electron 测试。
 
 ### 正在进行
 
-生产发布准备、项目知识档案整理、真实 AI 周复盘验收数据准备。
+GitHub 项目展示整理、Desktop Preview Release 准备，以及需要真实供应商环境的生产验收。
 
 ### 尚未开始
 
-正式域名绑定、生产 Paddle 商户审核、生产 OAuth/Turnstile/Resend/DeepSeek 配置、Release 页面、演示视频、自动 CI/CD。
+Desktop GitHub Release、安装包签名、自动更新、Desktop 登录与结束记录云同步、演示视频，以及生产供应商配置的最终复核。
 
 ### 已知问题
 
-源码文案编码瑕疵、远程 D1 session 数仍待用户刷新原 Pro tab 回填、Resend magic link provider 状态待确认、时间到自动结束未实现。
+Desktop Preview 仍为 unsigned、local-only，且没有自动更新；外部 OAuth、邮件、支付、AI 与生产供应商状态需要在对应控制台和真实环境中复核。详见 `docs/HANDOFF.md` 与 Desktop Release Notes。
 
 ### 当前正式架构
 
-React + Vite SPA，由 Cloudflare Worker 同时提供静态资源和 Hono API；IndexedDB 保存本地和活动计时；D1 保存 Pro 云端数据；Better Auth 管理账户；Paddle webhook 管理权益；DeepSeek 生成 aggregate-only 周复盘。
+React + Vite Web 客户端和 Electron Windows Desktop 客户端共享框架无关的专注领域规则。Web 使用 IndexedDB 保存本地和活动计时，并通过 Cloudflare Worker/Hono 访问 Better Auth、D1、Paddle 权益和 aggregate-only AI 周复盘；当前 Desktop Preview 使用独立本地 IndexedDB，不连接云端。
 
 ### 当前部署状态
 
-staging 已部署到 Cloudflare Worker，自定义域名为 `https://intenthour.yates-33.top`，workers.dev 地址为 `https://intenthour-staging.ylin99207.workers.dev`。最新已确认 Worker version：`5f05da69-29e6-46b2-8b69-1d53789a111e`。Google OAuth 还需要在 Google Cloud Console 加入新 redirect URI。
+Web 当前入口为 `https://intenthour.yates-33.top`。供应商控制台状态和 Worker version 属于易变化运行状态，不在这里固化；发布或故障排查时应按 `docs/DEPLOYMENT.md` 重新验证。Desktop 安装包仅在本地生成，尚未创建 GitHub Release。
 
 ### 下一步三个任务
 
-1. 清理 UI 编码瑕疵并重新跑视觉/E2E。
-2. 刷新原 Pro staging tab，确认 remote D1 completed sessions 从 2 回填到 3。
-3. 等上一完整 ISO 周满足数据后生成并验收 DeepSeek weekly review。
+1. 审查并提交当前 Web/Desktop/文档改动。
+2. 经明确确认后创建 GitHub Desktop Preview Release，并上传同一次构建的安装包与 checksum。
+3. 录制 60–90 秒演示视频并回填公开链接。
 
 ### 需要开发者确认的信息
 
-Google OAuth 新 redirect URI 是否已保存、正式联系邮箱、法律主体/退款说明最终文本、Resend 发送域名、Paddle 生产审核状态、是否需要公开演示视频、是否要启用自动 CI/CD。
+是否提交并推送当前改动、是否创建 Desktop Preview GitHub Release、是否上传未签名安装包，以及演示视频最终公开地址。OAuth、Resend、Paddle 和 AI 的生产供应商配置仍应在正式发布前重新核验。
 
 ## 32. ChatGPT 同步摘要
 

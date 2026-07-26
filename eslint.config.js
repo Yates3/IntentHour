@@ -6,7 +6,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.{ts,tsx,cts,mts}"],
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -19,7 +19,29 @@ export default tseslint.config(
     }
   },
   {
-    files: ["**/*.js", "**/*.mjs"],
+    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ["**/*.cjs"],
+    languageOptions: {
+      globals: {
+        __dirname: "readonly",
+        module: "readonly",
+        process: "readonly",
+        require: "readonly",
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  {
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+      },
+    },
   },
 );

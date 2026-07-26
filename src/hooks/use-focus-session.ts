@@ -6,6 +6,12 @@ import type {
   SessionOutcome,
 } from "../../shared/contracts";
 import {
+  discardSession,
+  finishSession,
+  pauseSession,
+  resumeSession,
+} from "../../shared/focus-session-lifecycle";
+import {
   getCurrentSession,
   getDeviceId,
   getSessionInterruptions,
@@ -73,18 +79,12 @@ export function useFocusSession(onSessionCompleted?: () => Promise<void>) {
 
   const togglePause = useCallback(async () => {
     if (!session) return;
-    const timestamp = new Date().toISOString();
-    const next: FocusSession = session.status === "paused"
-      ? {
-          ...session,
-          status: "running",
-          totalPausedMs:
-            session.totalPausedMs +
-            (session.pausedAt ? Date.now() - Date.parse(session.pausedAt) : 0),
-          pausedAt: null,
-          updatedAt: timestamp,
-        }
-      : { ...session, status: "paused", pausedAt: timestamp, updatedAt: timestamp };
+    const nowMs = Date.now();
+    const result = session.status === "paused"
+      ? resumeSession(session, nowMs)
+      : pauseSession(session, nowMs);
+    if (!result.ok) return;
+    const next = result.value;
     await localDb.sessions.put(next);
     setSession(next);
     setNow(Date.now());
@@ -113,20 +113,9 @@ export function useFocusSession(onSessionCompleted?: () => Promise<void>) {
   const finish = useCallback(
     async (outcome: SessionOutcome, outcomeNote?: string) => {
       if (!session) return;
-      const timestamp = new Date().toISOString();
-      const currentPause = session.status === "paused" && session.pausedAt
-        ? Date.now() - Date.parse(session.pausedAt)
-        : 0;
-      const next: FocusSession = {
-        ...session,
-        status: "completed",
-        endedAt: timestamp,
-        pausedAt: null,
-        totalPausedMs: session.totalPausedMs + currentPause,
-        outcome,
-        outcomeNote: outcomeNote?.trim() || null,
-        updatedAt: timestamp,
-      };
+      const result = finishSession(session, { outcome, outcomeNote }, Date.now());
+      if (!result.ok) return;
+      const next = result.value;
       await localDb.sessions.put(next);
       setSession(undefined);
       setInterruptions([]);
@@ -137,14 +126,9 @@ export function useFocusSession(onSessionCompleted?: () => Promise<void>) {
 
   const discard = useCallback(async () => {
     if (!session) return;
-    const timestamp = new Date().toISOString();
-    await localDb.sessions.put({
-      ...session,
-      status: "discarded",
-      endedAt: timestamp,
-      pausedAt: null,
-      updatedAt: timestamp,
-    });
+    const result = discardSession(session, Date.now());
+    if (!result.ok) return;
+    await localDb.sessions.put(result.value);
     setSession(undefined);
     setInterruptions([]);
   }, [session]);

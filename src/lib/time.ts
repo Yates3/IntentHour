@@ -1,16 +1,12 @@
 import type { FocusSession } from "../../shared/contracts";
+import { getElapsedMs, getRemainingMs } from "../../shared/focus-time";
 
 export function elapsedMs(session: FocusSession, now = Date.now()): number {
-  const start = Date.parse(session.startedAt);
-  const end = session.endedAt ? Date.parse(session.endedAt) : now;
-  const currentPause = session.status === "paused" && session.pausedAt
-    ? Math.max(0, end - Date.parse(session.pausedAt))
-    : 0;
-  return Math.max(0, end - start - session.totalPausedMs - currentPause);
+  return getElapsedMs(session, now);
 }
 
 export function remainingMs(session: FocusSession, now = Date.now()): number {
-  return Math.max(0, session.targetMinutes * 60_000 - elapsedMs(session, now));
+  return getRemainingMs(session, now);
 }
 
 export function formatClock(ms: number): string {

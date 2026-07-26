@@ -11,10 +11,14 @@ export default defineConfig({
     trace: "retain-on-failure"
   },
   webServer: externalBaseURL ? undefined : {
-    command: "npx.cmd vite --host 127.0.0.1 --port 41739 --strictPort",
+    command: "npm.cmd exec --yes --package=node@22.23.1 -- node tests/e2e/vite-server.mjs",
     url: "http://127.0.0.1:41739/api/health",
     reuseExistingServer: false,
-    timeout: 120000
+    timeout: 120000,
+    env: {
+      ...process.env,
+      INTENTHOUR_E2E: "1",
+    },
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
